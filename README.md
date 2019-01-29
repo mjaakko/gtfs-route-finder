@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mjaakko/gtfs-route-finder.svg?branch=master)](https://travis-ci.org/mjaakko/gtfs-route-finder)
+[![codecov](https://codecov.io/gh/mjaakko/gtfs-route-finder/branch/master/graph/badge.svg)](https://codecov.io/gh/mjaakko/gtfs-route-finder)
 ## gtfs-route-finder
 
 Sovellus Helsingin yliopiston kurssille "Aineopintojen harjoitustyö: 
