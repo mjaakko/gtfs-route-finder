@@ -5,7 +5,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import xyz.malkki.gtfsroutefinder.common.model.LatLng;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
-import xyz.malkki.gtfsroutefinder.gtfs.model.Stop;
+import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package xyz.malkki.gtfsroutefinder.gtfs.model;
+package xyz.malkki.gtfsroutefinder.gtfs.model.core;
 
 import xyz.malkki.gtfsroutefinder.gtfs.utils.GTFSDateParser;
 import xyz.malkki.gtfsroutefinder.gtfs.utils.GTFSParser;
