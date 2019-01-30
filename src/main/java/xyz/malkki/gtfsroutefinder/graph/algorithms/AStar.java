@@ -1,5 +1,6 @@
 package xyz.malkki.gtfsroutefinder.graph.algorithms;
 
+import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 
@@ -7,18 +8,25 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 //https://en.wikipedia.org/wiki/A*_search_algorithm
-public class AStar {
-    public <N> List<Edge<N>> findPath(Graph<N> graph, BiFunction<N, N, Integer> heuristicFunction, N from, Integer startTime, N to) {
+public class AStar<N> implements PathFindingAlgorithm<N> {
+    private BiFunction<N, N, Long> heuristicFunction;
+
+    public AStar(BiFunction<N, N, Long> heuristicFunction) {
+        this.heuristicFunction = heuristicFunction;
+    }
+
+    @Override
+    public List<Edge<N>> findPath(Graph<N> graph, N from, long startTime, N to) {
         Map<N, Edge<N>> routeMap = new HashMap<>();
         Set<N> found = new HashSet<>();
 
-        Map<N, Integer> timeAtNode = new HashMap<>();
+        Map<N, Long> timeAtNode = new HashMap<>();
         timeAtNode.put(from, startTime);
 
         PriorityQueue<N> queue = new PriorityQueue<>(new Comparator<N>() {
             @Override
             public int compare(N node1, N node2) {
-                return Integer.compare(timeAtNode.get(node1), timeAtNode.get(node2));
+                return Long.compare(timeAtNode.get(node1), timeAtNode.get(node2));
             }
         });
 
@@ -34,7 +42,7 @@ public class AStar {
             found.add(current);
 
             if (current.equals(to)) {
-                List<Edge<N>> route = new ArrayList<>();
+                List<Edge<N>> route = new TiraArrayList<>();
                 N node = current;
                 Edge<N> edge;
                 while((edge = routeMap.get(node)) != null) {
@@ -52,7 +60,7 @@ public class AStar {
                     continue;
                 }
 
-                if (edge.getArrivalTime() <= timeAtNode.getOrDefault(target, Integer.MAX_VALUE)) {
+                if (edge.getArrivalTime() <= timeAtNode.getOrDefault(target, Long.MAX_VALUE)) {
                     timeAtNode.put(target, edge.getArrivalTime() + heuristicFunction.apply(target, to));
                     routeMap.put(target, edge);
                 }
