@@ -8,6 +8,7 @@ import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AStarTest {
     private static class StringEdge extends Edge<String> {
@@ -66,7 +67,7 @@ public class AStarTest {
 
         assertNull(aStar.findPath(new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(String node) {
+            public List<Edge<String>> getEdgesFromNode(long time, String node) {
                 return Collections.emptyList();
             }
         }, "node1", 0, "node2"));
@@ -88,8 +89,8 @@ public class AStarTest {
 
         Graph<String> graph = new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(String node) {
-                return graphAsMap.getOrDefault(node, Collections.emptyList());
+            public List<Edge<String>> getEdgesFromNode(long time, String node) {
+                return graphAsMap.getOrDefault(node, Collections.emptyList()).stream().filter(edge -> edge.getDepartureTime() >= time).collect(Collectors.toList());
             }
         };
 
@@ -114,8 +115,8 @@ public class AStarTest {
 
         Graph<String> graph = new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(String node) {
-                return graphAsMap.getOrDefault(node, Collections.emptyList());
+            public List<Edge<String>> getEdgesFromNode(long time, String node) {
+                return graphAsMap.getOrDefault(node, Collections.emptyList()).stream().filter(edge -> edge.getDepartureTime() >= time).collect(Collectors.toList());
             }
         };
 

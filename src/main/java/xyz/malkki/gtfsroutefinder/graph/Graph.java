@@ -1,7 +1,5 @@
 package xyz.malkki.gtfsroutefinder.graph;
 
-import sun.security.provider.certpath.Vertex;
-
 import java.util.List;
 
 public abstract class Graph<N> {
@@ -10,5 +8,5 @@ public abstract class Graph<N> {
      * @param node Node
      * @return List of possible paths from the node
      */
-    public abstract List<Edge<N>> getEdgesFromNode(N node);
+    public abstract List<Edge<N>> getEdgesFromNode(long time, N node);
 }

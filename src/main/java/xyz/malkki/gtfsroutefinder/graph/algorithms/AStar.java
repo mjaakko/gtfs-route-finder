@@ -52,7 +52,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
                 return route;
             }
 
-            for (Edge<N> edge : graph.getEdgesFromNode(current)) {
+            for (Edge<N> edge : graph.getEdgesFromNode(timeAtNode.get(current), current)) {
                 N target = edge.getTo();
 
                 if (edge.getDepartureTime() < timeAtNode.get(current)) {

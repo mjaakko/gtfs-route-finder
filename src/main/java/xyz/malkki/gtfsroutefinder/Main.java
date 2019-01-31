@@ -104,7 +104,7 @@ public class Main {
 
         Graph<String> graph = new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(String node) {
+            public List<Edge<String>> getEdgesFromNode(long time, String node) {
                 return edges.get(node);
             }
         };
