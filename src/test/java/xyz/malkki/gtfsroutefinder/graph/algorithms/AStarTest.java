@@ -35,12 +35,12 @@ public class AStarTest {
         }
 
         @Override
-        public int getArrivalTime() {
+        public long getArrivalTime() {
             return arrival;
         }
 
         @Override
-        public int getDepartureTime() {
+        public long getDepartureTime() {
             return departure;
         }
 

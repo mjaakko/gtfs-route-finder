@@ -30,12 +30,12 @@ public class Main {
             }
 
             @Override
-            public int getArrivalTime() {
+            public long getArrivalTime() {
                 return 10;
             }
 
             @Override
-            public int getDepartureTime() {
+            public long getDepartureTime() {
                 return 0;
             }
         }, new Edge<String>() {
@@ -50,12 +50,12 @@ public class Main {
             }
 
             @Override
-            public int getArrivalTime() {
+            public long getArrivalTime() {
                 return 45;
             }
 
             @Override
-            public int getDepartureTime() {
+            public long getDepartureTime() {
                 return 0;
             }
         }));
@@ -72,12 +72,12 @@ public class Main {
             }
 
             @Override
-            public int getArrivalTime() {
+            public long getArrivalTime() {
                 return 30;
             }
 
             @Override
-            public int getDepartureTime() {
+            public long getDepartureTime() {
                 return 5;
             }
         }, new Edge<String>() {
@@ -92,12 +92,12 @@ public class Main {
             }
 
             @Override
-            public int getArrivalTime() {
+            public long getArrivalTime() {
                 return 20;
             }
 
             @Override
-            public int getDepartureTime() {
+            public long getDepartureTime() {
                 return 15;
             }
         }));

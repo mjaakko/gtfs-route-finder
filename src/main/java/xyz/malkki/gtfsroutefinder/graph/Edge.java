@@ -13,9 +13,9 @@ public abstract class Edge<N> {
     /**
      * @return Arrival time to the end node ({@link #getTo()})
      */
-    public abstract int getArrivalTime();
+    public abstract long getArrivalTime();
     /**
      * @return Departure time from the start node ({@link #getFrom()})
      */
-    public abstract int getDepartureTime();
+    public abstract long getDepartureTime();
 }
