@@ -1,7 +1,10 @@
 package xyz.malkki.gtfsroutefinder.common.model;
 
+import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -59,5 +62,37 @@ public class Geohash {
     @Override
     public String toString() {
         return getGeohash();
+    }
+
+    /**
+     * Helper function for calculating 9 geohashes around the specified location
+     * @param latitude Latitude of the location
+     * @param longitude Location of the location
+     * @param geohashLevel Geohash level
+     * @return List of geohashes
+     */
+    public static List<Geohash> getSurroundingGeohashes(BigDecimal latitude, BigDecimal longitude, int geohashLevel) {
+        List<Geohash> geohashes = new TiraArrayList<>(9);
+
+        BigDecimal delta = calculateDelta(geohashLevel);
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                geohashes.add(new Geohash(
+                        latitude.add(delta.multiply(BigDecimal.valueOf(i))),
+                        longitude.add(delta.multiply(BigDecimal.valueOf(j))), geohashLevel));
+            }
+        }
+
+        return geohashes;
+    }
+
+    private static BigDecimal calculateDelta(int geohashLevel) {
+        BigDecimal delta = BigDecimal.ONE;
+        for (int i = 1; i <= geohashLevel; i++) {
+            delta = delta.divide(BigDecimal.TEN, i, RoundingMode.HALF_UP);
+        }
+
+        return delta;
     }
 }
