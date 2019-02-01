@@ -22,11 +22,13 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
 
         Map<N, Long> timeAtNode = new HashMap<>();
         timeAtNode.put(from, startTime);
+        Map<N, Long> heuristicTimeAtNode = new HashMap<>();
+        heuristicTimeAtNode.put(from, startTime);
 
         PriorityQueue<N> queue = new PriorityQueue<>(new Comparator<N>() {
             @Override
             public int compare(N node1, N node2) {
-                return Long.compare(timeAtNode.get(node1), timeAtNode.get(node2));
+                return Long.compare(heuristicTimeAtNode.get(node1), heuristicTimeAtNode.get(node2));
             }
         });
 
@@ -38,6 +40,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
             if (found.contains(current)) {
                 continue;
             }
+            //System.out.println("Current node "+current.toString()+" - "+current.hashCode());
 
             found.add(current);
 
@@ -46,6 +49,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
                 N node = current;
                 Edge<N> edge;
                 while((edge = routeMap.get(node)) != null) {
+                    //System.out.println("Added "+edge.toString()+" to finished route");
                     route.add(edge);
                     node = edge.getFrom();
                 }
@@ -57,11 +61,16 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
 
                 if (edge.getDepartureTime() < timeAtNode.get(current)) {
                     //Cannot use edges that departed before arriving to the current node
+                    //System.out.println("Cannot use "+edge.toString());
                     continue;
                 }
 
+                //System.out.println("Found edge "+edge.toString()+" from "+current.toString());
+
                 if (edge.getArrivalTime() <= timeAtNode.getOrDefault(target, Long.MAX_VALUE)) {
-                    timeAtNode.put(target, edge.getArrivalTime() + heuristicFunction.apply(target, to));
+                    timeAtNode.put(target, edge.getArrivalTime());
+                    heuristicTimeAtNode.put(target, edge.getArrivalTime() + heuristicFunction.apply(target, to));
+
                     routeMap.put(target, edge);
                 }
                 queue.offer(target);
