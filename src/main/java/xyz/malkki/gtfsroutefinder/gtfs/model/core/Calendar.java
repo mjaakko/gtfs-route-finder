@@ -103,7 +103,7 @@ public class Calendar {
             boolean monday = "1".equals(record.get("monday"));
             boolean tuesday = "1".equals(record.get("tuesday"));
             boolean wednesday = "1".equals(record.get("wednesday"));
-            boolean thursday = "1".equals(record.get("thurday"));
+            boolean thursday = "1".equals(record.get("thursday"));
             boolean friday = "1".equals(record.get("friday"));
             boolean saturday = "1".equals(record.get("saturday"));
             boolean sunday = "1".equals(record.get("sunday"));
