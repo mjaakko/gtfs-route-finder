@@ -17,6 +17,7 @@ public class Route {
     public Route(String id, String name, TransportMode mode) {
         this.id = id;
         this.name = name;
+        this.mode = mode;
     }
 
     public String getId() {
