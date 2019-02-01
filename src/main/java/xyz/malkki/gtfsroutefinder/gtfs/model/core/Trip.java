@@ -45,6 +45,15 @@ public class Trip {
         return Objects.hash(routeId, serviceId, id);
     }
 
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "routeId='" + routeId + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                ", id='" + id + '\'' +
+                '}';
+    }
+
     public static List<Trip> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
             String routeId = record.get("route_id");

@@ -47,6 +47,15 @@ public class CalendarDate {
         return Objects.hash(serviceId, date, available);
     }
 
+    @Override
+    public String toString() {
+        return "CalendarDate{" +
+                "serviceId='" + serviceId + '\'' +
+                ", date=" + date +
+                ", available=" + available +
+                '}';
+    }
+
     public static List<CalendarDate> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
             String serviceId = record.get("service_id");

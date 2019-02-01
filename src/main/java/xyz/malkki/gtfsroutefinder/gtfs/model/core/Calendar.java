@@ -97,6 +97,22 @@ public class Calendar {
         return Objects.hash(serviceId, monday, tuesday, wednesday, thursday, friday, saturday, sunday, startDate, endDate);
     }
 
+    @Override
+    public String toString() {
+        return "Calendar{" +
+                "serviceId='" + serviceId + '\'' +
+                ", monday=" + monday +
+                ", tuesday=" + tuesday +
+                ", wednesday=" + wednesday +
+                ", thursday=" + thursday +
+                ", friday=" + friday +
+                ", saturday=" + saturday +
+                ", sunday=" + sunday +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
+
     public static List<Calendar> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
             String serviceId = record.get("service_id");

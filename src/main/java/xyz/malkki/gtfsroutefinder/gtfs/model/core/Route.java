@@ -46,6 +46,15 @@ public class Route {
         return Objects.hash(id, name, mode);
     }
 
+    @Override
+    public String toString() {
+        return "Route{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", mode=" + mode +
+                '}';
+    }
+
     public static List<Route> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
             String id = record.get("route_id");

@@ -51,6 +51,15 @@ public class Stop {
         return Objects.hash(id, name, location);
     }
 
+    @Override
+    public String toString() {
+        return "Stop{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", location=" + location +
+                '}';
+    }
+
     public static List<Stop> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
             String id = record.get("stop_id");
