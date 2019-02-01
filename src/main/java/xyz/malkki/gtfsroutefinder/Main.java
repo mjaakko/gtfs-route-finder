@@ -3,113 +3,55 @@ package xyz.malkki.gtfsroutefinder;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 import xyz.malkki.gtfsroutefinder.graph.algorithms.AStar;
+import xyz.malkki.gtfsroutefinder.gtfs.graph.GTFSGraph;
+import xyz.malkki.gtfsroutefinder.gtfs.graph.StopEdge;
+import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
+import xyz.malkki.gtfsroutefinder.gtfs.model.core.StopTime;
+import xyz.malkki.gtfsroutefinder.gtfs.utils.GTFSGraphBuilder;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Location for GTFS feed:");
+        String path = scanner.nextLine();
 
-        String node1 = "n1";
-        String node2 = "n2";
-        String node3 = "n3";
+        long start = System.nanoTime();
+        GTFSGraph gtfsGraph = GTFSGraphBuilder.buildFromFiles(path);
+        System.out.println("Graph built in  "+((System.nanoTime() - start) / 1_000_000)+"ms");
 
-        Map<String, List<Edge<String>>> edges = new HashMap<>();
-        edges.put(node1, Arrays.asList(new Edge<String>() {
-            @Override
-            public String getFrom() {
-                return node1;
+        AStar<Stop> routeFinder = new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (50*3.6)));
+
+        System.out.println("Search for origin stop:");
+        Stop origin = findStop(gtfsGraph, scanner);
+        System.out.println("Search for destination stop:");
+        Stop destination = findStop(gtfsGraph, scanner);
+
+        List<Edge<Stop>> route = routeFinder.findPath(gtfsGraph, origin, System.currentTimeMillis(), destination);
+        Collections.reverse(route);
+
+        route.forEach(edge -> {
+            StopEdge stopEdge = (StopEdge)edge;
+            System.out.println(stopEdge.getUsedRoute() + " ("+stopEdge.getTransportMode().name()+") "+stopEdge.getFrom()+" -> "+stopEdge.getTo().getName());
+        });
+    }
+
+    private static Stop findStop(GTFSGraph graph, Scanner scanner) {
+        List<Stop> stops = graph.findStopsByName(scanner.nextLine());
+        if (stops.size() > 1) {
+            for (int i = 0; i < stops.size(); i++) {
+                System.out.println((i+1)+" - "+stops.get(i).getName());
             }
 
-            @Override
-            public String getTo() {
-                return node2;
-            }
+            System.out.println("Select one");
+            int index = Integer.parseInt(scanner.nextLine());
 
-            @Override
-            public long getArrivalTime() {
-                return 10;
-            }
-
-            @Override
-            public long getDepartureTime() {
-                return 0;
-            }
-        }, new Edge<String>() {
-            @Override
-            public String getFrom() {
-                return node1;
-            }
-
-            @Override
-            public String getTo() {
-                return node3;
-            }
-
-            @Override
-            public long getArrivalTime() {
-                return 45;
-            }
-
-            @Override
-            public long getDepartureTime() {
-                return 0;
-            }
-        }));
-
-        edges.put(node2, Arrays.asList(new Edge<String>() {
-            @Override
-            public String getFrom() {
-                return node2;
-            }
-
-            @Override
-            public String getTo() {
-                return node3;
-            }
-
-            @Override
-            public long getArrivalTime() {
-                return 30;
-            }
-
-            @Override
-            public long getDepartureTime() {
-                return 5;
-            }
-        }, new Edge<String>() {
-            @Override
-            public String getFrom() {
-                return node2;
-            }
-
-            @Override
-            public String getTo() {
-                return node1;
-            }
-
-            @Override
-            public long getArrivalTime() {
-                return 20;
-            }
-
-            @Override
-            public long getDepartureTime() {
-                return 15;
-            }
-        }));
-
-        Graph<String> graph = new Graph<String>() {
-            @Override
-            public List<Edge<String>> getEdgesFromNode(long time, String node) {
-                return edges.get(node);
-            }
-        };
-
-        AStar aStar = new AStar((a,b) -> 0);
-        System.out.println(aStar.findPath(graph, node1, 0, node3).size());
+            return stops.get(index - 1);
+        } else {
+            return stops.get(0);
+        }
     }
 }
