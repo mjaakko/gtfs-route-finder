@@ -33,4 +33,11 @@ public class Indexer<T, I> {
     public List<T> getItems(I indexKey) {
         return index.getOrDefault(indexKey, Collections.emptyList());
     }
+
+    public static <T, I> Indexer<T, I> buildFromColletion(Collection<T> collection, Function<T, I> indexKeyFunction) {
+        Indexer<T, I> indexer = new Indexer<>(indexKeyFunction);
+        collection.forEach(indexer::add);
+
+        return indexer;
+    }
 }
