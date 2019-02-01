@@ -9,3 +9,4 @@ Tietorakenteet ja algoritmit"
 * Viikkoraportit
   * [Viikkoraportti 1](docs/viikkoraportit/1.md)
   * [Viikkoraportti 2](docs/viikkoraportit/2.md)
+  * [Viikkoraportti 3](docs/viikkoraportit/3.md)
