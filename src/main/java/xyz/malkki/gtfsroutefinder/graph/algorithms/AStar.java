@@ -1,6 +1,7 @@
 package xyz.malkki.gtfsroutefinder.graph.algorithms;
 
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+import xyz.malkki.gtfsroutefinder.datastructures.TiraHeap;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 
@@ -25,7 +26,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
         Map<N, Long> heuristicTimeAtNode = new HashMap<>();
         heuristicTimeAtNode.put(from, startTime);
 
-        PriorityQueue<N> queue = new PriorityQueue<>(new Comparator<N>() {
+        Queue<N> queue = new TiraHeap<>(new Comparator<N>() {
             @Override
             public int compare(N node1, N node2) {
                 return Long.compare(heuristicTimeAtNode.get(node1), heuristicTimeAtNode.get(node2));
