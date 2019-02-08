@@ -30,12 +30,14 @@ public class Main {
         System.out.println("Search for destination stop:");
         Stop destination = findStop(gtfsGraph, scanner);
 
+        long startRouteSearch = System.nanoTime();
         List<Edge<Stop>> route = routeFinder.findPath(gtfsGraph, origin, System.currentTimeMillis(), destination);
         Collections.reverse(route);
+        System.out.println("Route found in  "+((System.nanoTime() - startRouteSearch) / 1_000_000)+"ms");
 
         route.forEach(edge -> {
             StopEdge stopEdge = (StopEdge)edge;
-            System.out.println(stopEdge.getUsedRoute() + " ("+stopEdge.getTransportMode().name()+") "+stopEdge.getFrom()+" -> "+stopEdge.getTo().getName());
+            System.out.println(stopEdge.getUsedRoute() + " ("+stopEdge.getTransportMode().name()+") "+stopEdge.getFrom().getName()+" -> "+stopEdge.getTo().getName());
         });
     }
 
