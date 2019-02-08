@@ -1,5 +1,7 @@
 package xyz.malkki.gtfsroutefinder.common.utils;
 
+import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -21,7 +23,7 @@ public class Indexer<T, I> {
      * @param item
      */
     public void add(T item) {
-        List<T> items = index.computeIfAbsent(indexKeyFunction.apply(item), i -> new LinkedList<>());
+        List<T> items = index.computeIfAbsent(indexKeyFunction.apply(item), i -> new TiraArrayList<>());
         items.add(item);
     }
 

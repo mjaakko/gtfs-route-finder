@@ -3,6 +3,7 @@ package xyz.malkki.gtfsroutefinder.gtfs.graph;
 import xyz.malkki.gtfsroutefinder.common.model.Geohash;
 import xyz.malkki.gtfsroutefinder.common.utils.Indexer;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+import xyz.malkki.gtfsroutefinder.datastructures.TiraLinkedList;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 import xyz.malkki.gtfsroutefinder.gtfs.model.TransportMode;
@@ -52,7 +53,7 @@ public class GTFSGraph extends Graph<Stop> {
 
         Map<String, List<CalendarDate>> calendarDatesAsMap = new HashMap<>();
         calendarDates.forEach(calendarDate -> {
-            List<CalendarDate> list = calendarDatesAsMap.computeIfAbsent(calendarDate.getServiceId(), k -> new LinkedList<>());
+            List<CalendarDate> list = calendarDatesAsMap.computeIfAbsent(calendarDate.getServiceId(), k -> new TiraLinkedList<>());
             list.add(calendarDate);
         });
 
