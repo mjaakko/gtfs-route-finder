@@ -1,5 +1,7 @@
 package xyz.malkki.gtfsroutefinder.gtfs.utils;
 
+import xyz.malkki.gtfsroutefinder.datastructures.TiraHashSet;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -49,10 +51,10 @@ public class ServiceDates {
             days.add(DayOfWeek.SUNDAY);
         }
 
-        this.additions = new HashSet<>();
+        this.additions = new TiraHashSet<>();
         this.additions.addAll(additions);
 
-        this.exceptions = new HashSet<>();
+        this.exceptions = new TiraHashSet<>();
         this.exceptions.addAll(exceptions);
     }
 
