@@ -117,7 +117,7 @@ public class Calendar {
 
     public static List<Calendar> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
-            String serviceId = record.get("service_id");
+            String serviceId = record.isMapped("\uFEFFservice_id") ? record.get("\uFEFFservice_id") : record.get("service_id");
             boolean monday = "1".equals(record.get("monday"));
             boolean tuesday = "1".equals(record.get("tuesday"));
             boolean wednesday = "1".equals(record.get("wednesday"));

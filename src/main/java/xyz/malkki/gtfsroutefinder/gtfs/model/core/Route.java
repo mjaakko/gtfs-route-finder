@@ -60,7 +60,7 @@ public class Route {
 
     public static List<Route> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
-            String id = record.get("route_id");
+            String id = record.isMapped("\uFEFFroute_id") ? record.get("\uFEFFroute_id") : record.get("route_id");
             String shortName = record.get("route_short_name");
             String longName = record.get("route_long_name");
             int transportMode = Integer.parseInt(record.get("route_type"));
