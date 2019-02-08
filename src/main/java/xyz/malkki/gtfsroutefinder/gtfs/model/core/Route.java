@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#routestxt
+/**
+ * Describes GTFS route type, see <a href="https://developers.google.com/transit/gtfs/reference/#routestxt">GTFS reference</a>
+ */
 public class Route {
     private String id;
     private String name;

@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#stop_timestxt
+/**
+ * Describes GTFS stop time type, see <a href="https://developers.google.com/transit/gtfs/reference/#stop_timestxt">GTFS reference</a>
+ */
 public class StopTime {
     private String tripId;
     private int arrivalTime;

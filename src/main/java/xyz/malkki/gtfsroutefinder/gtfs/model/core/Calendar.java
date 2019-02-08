@@ -9,7 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#calendartxt
+/**
+ * Describes GTFS calendar type, see <a href="https://developers.google.com/transit/gtfs/reference/#calendartxt">GTFS reference</a>
+ */
 public class Calendar {
     private String serviceId;
     private boolean monday;

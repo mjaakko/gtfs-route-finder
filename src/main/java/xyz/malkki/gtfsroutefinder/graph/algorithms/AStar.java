@@ -16,22 +16,28 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
         this.heuristicFunction = heuristicFunction;
     }
 
+    /**
+     * Calculates a path from node A to node B using A*-algorithm
+     * @param graph Graph of nodes
+     * @param from Node A
+     * @param startTime Departure time from node A
+     * @param to Node B
+     * @return
+     */
     @Override
     public List<Edge<N>> findPath(Graph<N> graph, N from, long startTime, N to) {
         Map<N, Edge<N>> routeMap = new HashMap<>();
         Set<N> found = new HashSet<>();
 
+        //Keep track of arrival times to nodes so that edges which have departed from node before arrival can be ignored
         Map<N, Long> timeAtNode = new HashMap<>();
         timeAtNode.put(from, startTime);
+
+        //Select next nodes based on the value of heuristic function
         Map<N, Long> heuristicTimeAtNode = new HashMap<>();
         heuristicTimeAtNode.put(from, startTime);
 
-        Queue<N> queue = new TiraHeap<>(new Comparator<N>() {
-            @Override
-            public int compare(N node1, N node2) {
-                return Long.compare(heuristicTimeAtNode.get(node1), heuristicTimeAtNode.get(node2));
-            }
-        });
+        Queue<N> queue = new TiraHeap<>(Comparator.comparingLong(heuristicTimeAtNode::get));
 
         queue.add(from);
 
@@ -41,8 +47,6 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
             if (found.contains(current)) {
                 continue;
             }
-            //System.out.println("Current node "+current.toString()+" - "+current.hashCode());
-
             found.add(current);
 
             if (current.equals(to)) {
@@ -50,7 +54,6 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
                 N node = current;
                 Edge<N> edge;
                 while((edge = routeMap.get(node)) != null) {
-                    //System.out.println("Added "+edge.toString()+" to finished route");
                     route.add(edge);
                     node = edge.getFrom();
                 }
@@ -62,11 +65,8 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
 
                 if (edge.getDepartureTime() < timeAtNode.get(current)) {
                     //Cannot use edges that departed before arriving to the current node
-                    //System.out.println("Cannot use "+edge.toString());
                     continue;
                 }
-
-                //System.out.println("Found edge "+edge.toString()+" from "+current.toString());
 
                 if (edge.getArrivalTime() <= timeAtNode.getOrDefault(target, Long.MAX_VALUE)) {
                     timeAtNode.put(target, edge.getArrivalTime());

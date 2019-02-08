@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#calendar_datestxt
+/**
+ * Describes GTFS calendar date type, see <a href="https://developers.google.com/transit/gtfs/reference/#calendar_datestxt">GTFS reference</a>
+ */
 public class CalendarDate {
     private String serviceId;
     private LocalDate date;

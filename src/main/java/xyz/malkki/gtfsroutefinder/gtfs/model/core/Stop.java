@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#stopstxt
+/**
+ * Describes GTFS stop type, see <a href="https://developers.google.com/transit/gtfs/reference/#stopstxt">GTFS reference</a>
+ */
 public class Stop {
     private String id;
     private String name;

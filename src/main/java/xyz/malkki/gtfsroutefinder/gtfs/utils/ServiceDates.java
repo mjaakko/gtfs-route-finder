@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Helper class for checking if a public transport service runs on a specific date
+ */
 public class ServiceDates {
     private String serviceId;
     private LocalDate from;

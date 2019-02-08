@@ -14,6 +14,12 @@ public class Geohash {
     private String geohash;
     private int geohashLevel;
 
+    /**
+     * Creates a geohash with specified level from given coordinates
+     * @param latitude Latitude
+     * @param longitude Longitude
+     * @param geohashLevel Geohash level
+     */
     public Geohash(BigDecimal latitude, BigDecimal longitude, int geohashLevel) {
         String[] latitudeString = latitude.setScale(geohashLevel, RoundingMode.DOWN).toPlainString().split("\\.");
         String[] longitudeString = longitude.setScale(geohashLevel, RoundingMode.DOWN).toPlainString().split("\\.");
@@ -33,14 +39,26 @@ public class Geohash {
         this.geohashLevel = geohashLevel;
     }
 
+    /**
+     * See {@link Geohash#Geohash(BigDecimal, BigDecimal, int)}
+     * @param latitude
+     * @param longitude
+     * @param geohashLevel
+     */
     public Geohash(double latitude, double longitude, int geohashLevel) {
         this(BigDecimal.valueOf(latitude), BigDecimal.valueOf(longitude), geohashLevel);
     }
 
+    /**
+     * @return Geohash as string
+     */
     public String getGeohash() {
         return geohash;
     }
 
+    /**
+     * @return Geohash level
+     */
     public int getGeohashLevel() {
         return geohashLevel;
     }

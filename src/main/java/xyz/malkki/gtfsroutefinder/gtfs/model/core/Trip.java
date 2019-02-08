@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-//https://developers.google.com/transit/gtfs/reference/#tripstxt
+/**
+ * Describes GTFS trip type, see <a href="https://developers.google.com/transit/gtfs/reference/#tripstxt">GTFS reference</a>
+ */
 public class Trip {
     private String routeId;
     private String serviceId;

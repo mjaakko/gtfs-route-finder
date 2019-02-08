@@ -21,8 +21,14 @@ import java.util.stream.Collectors;
 public class GTFSGraph extends Graph<Stop> {
     private static final double AVERAGE_WALKING_SPEED_MS = 1.4;
 
+    /**
+     * Time zone where the graph is based in
+     */
     private TimeZone timeZone;
 
+    /**
+     * Stops indexed by geohash (e.g. 60;24/19/28)
+     */
     private Indexer<Stop, Geohash> stopByGeohashIndex;
 
     private Indexer<StopTime, String> stopTimesByStopIdIndex;
@@ -56,13 +62,13 @@ public class GTFSGraph extends Graph<Stop> {
                     .stream()
                     .filter(calendarDate -> calendarDate.isAvailable())
                     .map(calendarDate -> calendarDate.getDate())
-                    .collect(Collectors.toCollection(() -> new ArrayList<>()));
+                    .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
 
             List<LocalDate> exceptions = calendarDatesAsMap.getOrDefault(calendar.getServiceId(), Collections.emptyList())
                     .stream()
                     .filter(calendarDate -> !calendarDate.isAvailable())
                     .map(calendarDate -> calendarDate.getDate())
-                    .collect(Collectors.toCollection(() -> new ArrayList<>()));
+                    .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
 
             serviceDates.put(calendar.getServiceId(), new ServiceDates(calendar.getServiceId(), calendar.getStartDate(), calendar.getEndDate(),
                     calendar.isMonday(), calendar.isTuesday(), calendar.isWednesday(), calendar.isThursday(), calendar.isFriday(), calendar.isSaturday(), calendar.isSunday(), additions, exceptions));
@@ -84,25 +90,33 @@ public class GTFSGraph extends Graph<Stop> {
      * @return
      */
     private List<Edge<Stop>> getWalkingEdgesFromStop(long timeAtStop, Stop stop) {
+        //Calculate a list of geohashes around the stop
         List<Geohash> nearbyGeohashes = Geohash.getSurroundingGeohashes(
                 BigDecimal.valueOf(stop.getLocation().getLatitude()),
                 BigDecimal.valueOf(stop.getLocation().getLongitude()), 3);
 
         return nearbyGeohashes.stream()
+                //Get all stops inside the geohashes
                 .flatMap(geohash -> stopByGeohashIndex.getItems(geohash).stream())
+                //Filter stops that are too far
                 .filter(stopFromIndex -> stopFromIndex.getLocation().distanceTo(stop.getLocation()) <= 500
                         && !stopFromIndex.getId().equals(stop.getId()))
-                .map(walkableStop -> {
-                    return new StopEdge(null, //No public transport route used when walking
-                            TransportMode.WALK,
-                            stop,
-                            walkableStop,
-                            timeAtStop + 1 + Math.round(walkableStop.getLocation().distanceTo(stop.getLocation()) / AVERAGE_WALKING_SPEED_MS),
-                            timeAtStop);
-                })
+                .map(walkableStop -> new StopEdge(null, //No public transport route used when walking
+                        TransportMode.WALK,
+                        stop,
+                        walkableStop,
+                        //Calculate walking time
+                        timeAtStop + 1 + Math.round(walkableStop.getLocation().distanceTo(stop.getLocation()) / AVERAGE_WALKING_SPEED_MS),
+                        timeAtStop))
                 .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
     }
 
+    /**
+     * Finds possible public transit journeys departing from the stop after the specified time
+     * @param timeAtStop
+     * @param stop
+     * @return
+     */
     private List<Edge<Stop>> getPublicTransportEdgesFromStop(long timeAtStop, Stop stop) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(timeZone);
         gregorianCalendar.setTimeInMillis(timeAtStop);
@@ -183,6 +197,9 @@ public class GTFSGraph extends Graph<Stop> {
     }
 
     public List<Stop> findStopsByName(String name) {
-        return stops.values().stream().filter(stop -> stop.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT))).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
+        return stops.values()
+                .stream()
+                .filter(stop -> stop.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)))
+                .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
     }
 }
