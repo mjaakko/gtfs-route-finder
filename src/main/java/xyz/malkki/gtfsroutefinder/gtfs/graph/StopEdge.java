@@ -8,14 +8,16 @@ import java.util.Objects;
 
 public class StopEdge extends Edge<Stop> {
     private String usedRoute;
+    private String usedTripId;
     private TransportMode transportMode;
     private Stop from;
     private Stop to;
     private long arrivalTime;
     private long departureTime;
 
-    public StopEdge(String usedRoute, TransportMode transportMode, Stop from, Stop to, long arrivalTime, long departureTime) {
+    public StopEdge(String usedRoute, String usedTripId, TransportMode transportMode, Stop from, Stop to, long arrivalTime, long departureTime) {
         this.usedRoute = usedRoute;
+        this.usedTripId = usedTripId;
         this.transportMode = transportMode;
         this.from = from;
         this.to = to;
@@ -26,6 +28,8 @@ public class StopEdge extends Edge<Stop> {
     public String getUsedRoute() {
         return usedRoute;
     }
+
+    public String getUsedTripId() { return usedTripId; }
 
     public TransportMode getTransportMode() {
         return transportMode;
@@ -59,6 +63,7 @@ public class StopEdge extends Edge<Stop> {
         return arrivalTime == stopEdge.arrivalTime &&
                 departureTime == stopEdge.departureTime &&
                 Objects.equals(usedRoute, stopEdge.usedRoute) &&
+                Objects.equals(usedTripId, stopEdge.usedTripId) &&
                 transportMode == stopEdge.transportMode &&
                 Objects.equals(from, stopEdge.from) &&
                 Objects.equals(to, stopEdge.to);
@@ -66,13 +71,14 @@ public class StopEdge extends Edge<Stop> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(usedRoute, transportMode, from, to, arrivalTime, departureTime);
+        return Objects.hash(usedRoute, usedTripId, transportMode, from, to, arrivalTime, departureTime);
     }
 
     @Override
     public String toString() {
         return "StopEdge{" +
                 "usedRoute='" + usedRoute + '\'' +
+                ", usedTripId='" + usedTripId + '\'' +
                 ", transportMode=" + transportMode +
                 ", from=" + from +
                 ", to=" + to +

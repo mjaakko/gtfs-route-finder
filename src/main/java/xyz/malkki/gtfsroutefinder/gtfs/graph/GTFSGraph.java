@@ -101,7 +101,8 @@ public class GTFSGraph extends Graph<Stop> {
                 //Filter stops that are too far
                 .filter(stopFromIndex -> stopFromIndex.getLocation().distanceTo(stop.getLocation()) <= 500
                         && !stopFromIndex.getId().equals(stop.getId()))
-                .map(walkableStop -> new StopEdge(null, //No public transport route used when walking
+                .map(walkableStop -> new StopEdge(null, //No public transport route used when walking -> route = null, trip = null
+                        null,
                         TransportMode.WALK,
                         stop,
                         walkableStop,
@@ -135,6 +136,7 @@ public class GTFSGraph extends Graph<Stop> {
                 edges.addAll(
                         getPossibleDestinations(stop,
                                 routes.get(trips.get(stopTime.getTripId()).getRouteId()),
+                                stopTime.getTripId(),
                                 estimatedDepartureDate,
                                 stopTime.getArrivalTime(),
                                 stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
@@ -143,6 +145,7 @@ public class GTFSGraph extends Graph<Stop> {
                 edges.addAll(
                         getPossibleDestinations(stop,
                                 routes.get(trips.get(stopTime.getTripId()).getRouteId()),
+                                stopTime.getTripId(),
                                 estimatedDepartureDate.minus(1, ChronoUnit.DAYS),
                                 stopTime.getArrivalTime(),
                                 stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
@@ -151,6 +154,7 @@ public class GTFSGraph extends Graph<Stop> {
                 edges.addAll(
                         getPossibleDestinations(stop,
                                 routes.get(trips.get(stopTime.getTripId()).getRouteId()),
+                                stopTime.getTripId(),
                                 estimatedDepartureDate.plus(1, ChronoUnit.DAYS),
                                 stopTime.getArrivalTime(),
                                 stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
@@ -160,14 +164,14 @@ public class GTFSGraph extends Graph<Stop> {
         }).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
     }
 
-    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip) {
+    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip) {
         List<StopEdge> edges = new TiraArrayList<>();
 
         long departureTimeMillis = calculateTime(departureDate, departureTime);
 
         stopTimesOfTrip.forEach(stopTime -> {
             if (calculateTime(departureDate, stopTime.getArrivalTime()) > departureTimeMillis) {
-                edges.add(new StopEdge(route.getName(), route.getMode(), stop, stops.get(stopTime.getStopId()), calculateTime(departureDate, stopTime.getArrivalTime()), departureTimeMillis));
+                edges.add(new StopEdge(route.getName(), tripId, route.getMode(), stop, stops.get(stopTime.getStopId()), calculateTime(departureDate, stopTime.getArrivalTime()), departureTimeMillis));
             }
         });
 
