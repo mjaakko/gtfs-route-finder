@@ -12,6 +12,16 @@ repositories {
     mavenCentral()
 }
 
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'xyz/malkki/gtfsroutefinder/Main'
+            ])
+        })
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
