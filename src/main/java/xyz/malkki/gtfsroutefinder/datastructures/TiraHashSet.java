@@ -12,8 +12,11 @@ public class TiraHashSet<E> extends AbstractSet<E> {
     private void increaseCapacity() {
         TiraLinkedList<E>[] newArray = new TiraLinkedList[2 * (1 + values.length)];
         for (TiraLinkedList<E> list : values) {
+            if (list == null) {
+                continue;
+            }
             for (E item : list) {
-                int index = item.hashCode();
+                int index = item.hashCode() % values.length;
 
                 if (newArray[index] == null) {
                     newArray[index] = new TiraLinkedList<>();

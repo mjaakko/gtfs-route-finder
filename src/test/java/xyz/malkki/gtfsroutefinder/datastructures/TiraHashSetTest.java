@@ -26,6 +26,15 @@ public class TiraHashSetTest {
     }
 
     @Test
+    public void testAddMany() {
+        for (int i = 0; i < 1000000; i++) {
+            set.add(String.valueOf(i));
+        }
+
+        assertEquals(1000000, set.size());
+    }
+
+    @Test
     public void testCannotAddSameItemTwice() {
         set.add("test1");
         set.add("test1");
@@ -110,7 +119,6 @@ public class TiraHashSetTest {
         Iterator<String> iterator = set.iterator();
         while(iterator.hasNext()) {
             String s = iterator.next();
-            System.out.println(s);
             if ("test3".equals(s)) {
                 iterator.remove();
             }
