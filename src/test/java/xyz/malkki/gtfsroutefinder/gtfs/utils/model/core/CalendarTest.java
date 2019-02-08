@@ -3,8 +3,11 @@ package xyz.malkki.gtfsroutefinder.gtfs.utils.model.core;
 import org.junit.Before;
 import org.junit.Test;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Calendar;
+import xyz.malkki.gtfsroutefinder.gtfs.model.core.Route;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -56,5 +59,13 @@ public class CalendarTest {
         assertTrue(calendar.isSunday());
         assertEquals(LocalDate.of(2000, 1, 1), calendar.getStartDate());
         assertEquals(LocalDate.of(2100, 1, 1), calendar.getEndDate());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<Calendar> calendars = Calendar.parseFromFile(getClass().getClassLoader().getResource("gtfs/calendar.txt").getFile());
+
+        assertEquals(1, calendars.size());
+        assertEquals("1001_20190118_20190303_Ke", calendars.get(0).getServiceId());
     }
 }

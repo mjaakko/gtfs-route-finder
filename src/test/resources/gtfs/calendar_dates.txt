@@ -1,0 +1,2 @@
+service_id,date,exception_type
+3001I_20190118_20190303_Su,20190120,2

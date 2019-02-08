@@ -7,7 +7,9 @@ import xyz.malkki.gtfsroutefinder.gtfs.model.TransportMode;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Calendar;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Route;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -52,5 +54,13 @@ public class RouteTest {
         assertEquals("test", route.getId());
         assertEquals("test_name", route.getName());
         assertEquals(TransportMode.BUS, route.getMode());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<Route> routes = Route.parseFromFile(getClass().getClassLoader().getResource("gtfs/routes.txt").getFile());
+
+        assertEquals(1, routes.size());
+        assertEquals("1001", routes.get(0).getId());
     }
 }

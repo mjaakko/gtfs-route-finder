@@ -6,6 +6,9 @@ import xyz.malkki.gtfsroutefinder.common.model.LatLng;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Trip;
 
+import java.io.IOException;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class TripTest {
@@ -49,5 +52,13 @@ public class TripTest {
         assertEquals("route", trip.getRouteId());
         assertEquals("service", trip.getServiceId());
         assertEquals("id", trip.getId());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<Trip> trips = Trip.parseFromFile(getClass().getClassLoader().getResource("gtfs/trips.txt").getFile());
+
+        assertEquals(1, trips.size());
+        assertEquals("1001", trips.get(0).getRouteId());
     }
 }

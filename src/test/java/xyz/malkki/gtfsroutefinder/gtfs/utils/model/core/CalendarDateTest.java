@@ -5,7 +5,9 @@ import org.junit.Test;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Calendar;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.CalendarDate;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -50,5 +52,13 @@ public class CalendarDateTest {
         assertEquals("test", calendarDate.getServiceId());
         assertEquals(LocalDate.of(2000, 1, 1), calendarDate.getDate());
         assertTrue(calendarDate.isAvailable());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<CalendarDate> calendarDates = CalendarDate.parseFromFile(getClass().getClassLoader().getResource("gtfs/calendar_dates.txt").getFile());
+
+        assertEquals(1, calendarDates.size());
+        assertEquals("3001I_20190118_20190303_Su", calendarDates.get(0).getServiceId());
     }
 }

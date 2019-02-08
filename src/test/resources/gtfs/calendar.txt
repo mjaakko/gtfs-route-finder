@@ -1,0 +1,2 @@
+service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+1001_20190118_20190303_Ke,0,0,1,0,0,0,0,20190118,20190303

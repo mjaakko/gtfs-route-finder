@@ -6,6 +6,9 @@ import xyz.malkki.gtfsroutefinder.common.model.LatLng;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.StopTime;
 
+import java.io.IOException;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class StopTimeTest {
@@ -51,5 +54,13 @@ public class StopTimeTest {
         assertEquals(1, stopTime.getDepartureTime());
         assertEquals("stop", stopTime.getStopId());
         assertEquals(1, stopTime.getStopSequence());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<StopTime> stoptimes = StopTime.parseFromFile(getClass().getClassLoader().getResource("gtfs/stop_times.txt").getFile());
+
+        assertEquals(1, stoptimes.size());
+        assertEquals("1001_20190118_Ke_1_0540", stoptimes.get(0).getTripId());
     }
 }

@@ -5,6 +5,9 @@ import org.junit.Test;
 import xyz.malkki.gtfsroutefinder.common.model.LatLng;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
 
+import java.io.IOException;
+import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -49,5 +52,13 @@ public class StopTest {
         assertEquals("test", stop.getId());
         assertEquals("test_name", stop.getName());
         assertEquals(new LatLng(0, 0), stop.getLocation());
+    }
+
+    @Test
+    public void testParseFromFile() throws IOException {
+        List<Stop> stops = Stop.parseFromFile(getClass().getClassLoader().getResource("gtfs/stops.txt").getFile());
+
+        assertEquals(1, stops.size());
+        assertEquals("1010102", stops.get(0).getId());
     }
 }
