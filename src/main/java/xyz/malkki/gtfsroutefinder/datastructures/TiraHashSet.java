@@ -16,7 +16,7 @@ public class TiraHashSet<E> extends AbstractSet<E> {
                 continue;
             }
             for (E item : list) {
-                int index = getIndex(item);
+                int index = getIndex(item, newArray.length);
 
                 if (newArray[index] == null) {
                     newArray[index] = new TiraLinkedList<>();
@@ -92,7 +92,7 @@ public class TiraHashSet<E> extends AbstractSet<E> {
 
     @Override
     public boolean contains(Object o) {
-        int index = getIndex(o);
+        int index = getIndex(o, values.length);
 
         if (values[index] == null) {
             return false;
@@ -108,7 +108,7 @@ public class TiraHashSet<E> extends AbstractSet<E> {
 
     @Override
     public boolean remove(Object o) {
-        int index = getIndex(o);
+        int index = getIndex(o, values.length);
 
         if (values[index] == null) {
             return false;
@@ -138,7 +138,7 @@ public class TiraHashSet<E> extends AbstractSet<E> {
             increaseCapacity();
         }
 
-        int index = getIndex(item);
+        int index = getIndex(item, values.length);
 
         if (values[index] == null) {
             values[index] = new TiraLinkedList<>();
@@ -155,8 +155,8 @@ public class TiraHashSet<E> extends AbstractSet<E> {
         return true;
     }
 
-    private int getIndex(Object o) {
-        return Math.abs(o.hashCode() % values.length);
+    private int getIndex(Object o, int arrayLength) {
+        return Math.abs(o.hashCode() % arrayLength);
     }
 
     private double getLoadFactor() {
