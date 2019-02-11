@@ -44,7 +44,7 @@ public class TiraLinkedList<E> extends AbstractList<E> {
             previous.next = current != null ? current.next : null;
 
             if (previous.next == null) {
-                tail = previous.next;
+                tail = previous;
             } else {
                 previous.next.prev = previous;
             }
