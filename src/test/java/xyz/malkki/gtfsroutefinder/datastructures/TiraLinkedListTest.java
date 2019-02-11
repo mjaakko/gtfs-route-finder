@@ -15,6 +15,47 @@ public class TiraLinkedListTest {
     }
 
     @Test
+    public void testRemoveWithIndex() {
+        List<String> list = new TiraLinkedList<String>();
+        list.add("test1");
+        list.add("test2");
+        list.add("test3");
+
+        list.remove(1);
+
+        assertEquals(2, list.size());
+        assertFalse(list.contains("test2"));
+    }
+
+    @Test
+    public void testRemoveWithIndexTail() {
+        List<String> list = new TiraLinkedList<String>();
+        list.add("test1");
+        list.add("test2");
+        list.add("test3");
+
+        list.remove(2);
+
+        assertEquals(2, list.size());
+        assertFalse(list.contains("test3"));
+    }
+
+    @Test
+    public void testAddMiddle() {
+        List<String> list = new TiraLinkedList<>();
+        list.add("test1");
+        list.add("test2");
+
+        list.add(1, "test3");
+
+        assertEquals(3, list.size());
+
+        assertEquals("test2", list.get(2));
+        assertEquals("test3", list.get(1));
+        assertEquals("test1", list.get(0));
+    }
+
+    @Test
     public void testCanRemoveExistingItem() {
         List<String> list = new TiraLinkedList<String>();
         list.add("test1");

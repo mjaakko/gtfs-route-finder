@@ -1,24 +1,30 @@
 package xyz.malkki.gtfsroutefinder.datastructures;
 
 import java.util.AbstractList;
-import java.util.List;
 
 public class TiraLinkedList<E> extends AbstractList<E> {
     private ListElement<E> head;
+    private ListElement<E> tail;
+    private int itemCount = 0;
 
     private ListElement<E> getElement(int index) {
-        if (index < 0) {
+        if (index < 0 || index >= itemCount) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        ListElement<E> current = head;
-        for(int i = 0; i < index; i++) {
-            if (current == null) {
-                throw new ArrayIndexOutOfBoundsException();
+        if (index <= itemCount / 2) {
+            ListElement<E> current = head;
+            for(int i = 0; i < index; i++) {
+                current = current.next;
             }
-            current = current.next;
+            return current;
+        } else {
+            ListElement<E> current = tail;
+            for(int i = 0; i < itemCount - index - 1; i++) {
+                current = current.prev;
+            }
+            return current;
         }
-        return current;
     }
 
     @Override
@@ -26,13 +32,24 @@ public class TiraLinkedList<E> extends AbstractList<E> {
         if (index == 0) {
             ListElement<E> currentHead = head;
             head = currentHead.next;
+            if (head == null) {
+                tail = null;
+            }
 
+            itemCount--;
             return currentHead.value;
         } else {
             ListElement<E> previous = getElement(index - 1);
             ListElement<E> current = previous.next;
-            previous.next = current.next;
+            previous.next = current != null ? current.next : null;
 
+            if (previous.next == null) {
+                tail = previous.next;
+            } else {
+                previous.next.prev = previous;
+            }
+
+            itemCount--;
             return current.value;
         }
     }
@@ -40,13 +57,23 @@ public class TiraLinkedList<E> extends AbstractList<E> {
     @Override
     public void add(int index, E value) {
         if (index == 0) {
-            head = new ListElement<>(value, head);
+            head = new ListElement<>(value, head, null);
+            if (head.next == null) {
+                tail = head;
+            }
         } else {
             ListElement<E> previous = getElement(index - 1);
             ListElement<E> current = previous.next;
 
-            previous.next = new ListElement<>(value, current);
+            previous.next = new ListElement<>(value, current, previous);
+            if (current != null) {
+                current.prev = previous.next;
+            } else {
+                tail = previous.next;
+            }
         }
+
+        itemCount++;
     }
 
     @Override
@@ -65,24 +92,18 @@ public class TiraLinkedList<E> extends AbstractList<E> {
 
     @Override
     public int size() {
-        int count = 0;
-
-        ListElement current = head;
-        while (current != null) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
+        return itemCount;
     }
 
     private static class ListElement<E> {
         E value;
         ListElement<E> next;
+        ListElement<E> prev;
 
-        public ListElement(E value, ListElement<E> next) {
+        public ListElement(E value, ListElement<E> next, ListElement<E> prev) {
             this.value = value;
             this.next = next;
+            this.prev = prev;
         }
     }
 }
