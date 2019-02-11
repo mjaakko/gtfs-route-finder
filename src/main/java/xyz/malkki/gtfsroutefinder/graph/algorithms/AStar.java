@@ -1,6 +1,7 @@
 package xyz.malkki.gtfsroutefinder.graph.algorithms;
 
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+import xyz.malkki.gtfsroutefinder.datastructures.TiraHashMap;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraHashSet;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraHeap;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
@@ -27,15 +28,15 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
      */
     @Override
     public List<Edge<N>> findPath(Graph<N> graph, N from, long startTime, N to) {
-        Map<N, Edge<N>> routeMap = new HashMap<>();
+        Map<N, Edge<N>> routeMap = new TiraHashMap<>();
         Set<N> found = new TiraHashSet<>();
 
         //Keep track of arrival times to nodes so that edges which have departed from node before arrival can be ignored
-        Map<N, Long> timeAtNode = new HashMap<>();
+        Map<N, Long> timeAtNode = new TiraHashMap<>();
         timeAtNode.put(from, startTime);
 
         //Select next nodes based on the value of heuristic function
-        Map<N, Long> heuristicTimeAtNode = new HashMap<>();
+        Map<N, Long> heuristicTimeAtNode = new TiraHashMap<>();
         heuristicTimeAtNode.put(from, startTime);
 
         Queue<N> queue = new TiraHeap<>(Comparator.comparingLong(heuristicTimeAtNode::get));

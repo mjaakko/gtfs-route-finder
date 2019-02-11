@@ -3,6 +3,7 @@ package xyz.malkki.gtfsroutefinder.gtfs.graph;
 import xyz.malkki.gtfsroutefinder.common.model.Geohash;
 import xyz.malkki.gtfsroutefinder.common.utils.Indexer;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+import xyz.malkki.gtfsroutefinder.datastructures.TiraHashMap;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraLinkedList;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
@@ -51,13 +52,13 @@ public class GTFSGraph extends Graph<Stop> {
         stopTimesByStopIdIndex = Indexer.buildFromColletion(stopTimes, stopTime -> stopTime.getStopId());
         stopTimesByTripIdIndex = Indexer.buildFromColletion(stopTimes, stopTime -> stopTime.getTripId());
 
-        Map<String, List<CalendarDate>> calendarDatesAsMap = new HashMap<>();
+        Map<String, List<CalendarDate>> calendarDatesAsMap = new TiraHashMap<>();
         calendarDates.forEach(calendarDate -> {
             List<CalendarDate> list = calendarDatesAsMap.computeIfAbsent(calendarDate.getServiceId(), k -> new TiraLinkedList<>());
             list.add(calendarDate);
         });
 
-        serviceDates = new HashMap<>();
+        serviceDates = new TiraHashMap<>();
         calendars.forEach(calendar -> {
             List<LocalDate> additions = calendarDatesAsMap.getOrDefault(calendar.getServiceId(), Collections.emptyList())
                     .stream()
@@ -75,13 +76,13 @@ public class GTFSGraph extends Graph<Stop> {
                     calendar.isMonday(), calendar.isTuesday(), calendar.isWednesday(), calendar.isThursday(), calendar.isFriday(), calendar.isSaturday(), calendar.isSunday(), additions, exceptions));
         });
 
-        this.stops = new HashMap<>(stops.size());
+        this.stops = new TiraHashMap<>(/*stops.size()*/);
         stops.forEach(stop -> this.stops.put(stop.getId(), stop));
 
-        this.routes = new HashMap<>(routes.size());
+        this.routes = new TiraHashMap<>(/*routes.size()*/);
         routes.forEach(route -> this.routes.put(route.getId(), route));
 
-        this.trips = new HashMap<>(trips.size());
+        this.trips = new TiraHashMap<>(/*trips.size()*/);
         trips.forEach(trip -> this.trips.put(trip.getId(), trip));
     }
 
