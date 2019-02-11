@@ -3,8 +3,7 @@ package xyz.malkki.gtfsroutefinder.datastructures;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class TiraHeapTest {
@@ -58,5 +57,22 @@ public class TiraHeapTest {
 
         Arrays.sort(values);
         assertArrayEquals(values, fromHeap);
+    }
+
+    @Test
+    public void testIterator() {
+        heap.offer(1);
+        heap.offer(2);
+
+        List<Integer> values = new ArrayList<>();
+
+        Iterator<Integer> iterator = heap.iterator();
+        while (iterator.hasNext()) {
+            values.add(iterator.next());
+        }
+
+        assertEquals(2, values.size());
+        assertTrue(values.contains(1));
+        assertTrue(values.contains(2));
     }
 }
