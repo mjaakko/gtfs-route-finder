@@ -3,7 +3,21 @@
 `HSL.zip` tutkitusti toimivat tällä ohjelmalla.
 2. Aja ohjelma komennolla `gradle run`
 3. Kun ohjelma sanoo: `Location for GTFS feed:`, syötä aiemmin lataamasi GTFS-syötteen sijainti
-4. Kun ohjelma sanoo: `Search for origin stop:`, kirjoita hakusana lähtöpysäkille, esim:
+4. Ohjelma kysyy haluamasi toiminnon
+
+## 1 - Algoritmien vertailu
+
+1. Ohjelma kysyy kuinka monta kertaa reittihaku toistetaan
+   * *Huom!* reittihaku on hidas ja suuremmilla syötteillä (esim. 
+HSL-alueen) reitinhaku voi kestää muutamia minuutteja per toisto
+2. Kun ohjelma on laskenut halutun määrän reittejä, se tulostaa kuinka 
+paljon reitinhakuun käytettiin aikaa A*-algoritmilla ja Dijkstran 
+algoritmilla
+
+## 2 - Reittihaku 
+
+1. Kun ohjelma sanoo: `Search for origin stop:`, kirjoita hakusana 
+lähtöpysäkille, esim:
    * Jos hakusanalla löytyy vain yksi pysäkki, ohjelma asettaa sen suoraan lähtöpysäkiksi
    * Jos hakusanalla löytyy useampi pysäkki, ohjelma tulostaa niistä listan, esim: ```
 1 - Pyynikintie
@@ -15,8 +29,9 @@
 7 - Pyynikintori
 8 - Pyynikintori A
 9 - Pyynikin koulu``` Valitse pysäkki numerolla
-5. Kun ohjelma sanoo: `Search for destination stop:`, valitse päätepysäkki samalla tavalla kuin lähtöpysäkki
-6. Ohjelma laskee reitin ja tulostaa sen
+2. Kun ohjelma sanoo: `Search for destination stop:`, valitse 
+päätepysäkki samalla tavalla kuin lähtöpysäkki
+3. Ohjelma laskee reitin ja tulostaa sen
 ```
 Route found in  26904ms
 null (WALK) Pyynikintie -> Pyynikintie
@@ -47,5 +62,5 @@ null (WALK) Pyynikintori A -> Pyynikintori
 null (WALK) Tieteenkatu -> Shell Hervanta
 ```
 
-**Huom!** Tällä hetkellä ohjelma ei juurikaan käsittele virhetilanteita ja esimerkiksi virheellinen syöte tai tilanne, jossa reittiä ei löydy, johtaa 
-ohjelman kaatumiseen.
+**Huom!** Tällä hetkellä ohjelma ei juurikaan käsittele virhetilanteita 
+ja esimerkiksi virheellinen syöte johtaa ohjelman kaatumiseen.
