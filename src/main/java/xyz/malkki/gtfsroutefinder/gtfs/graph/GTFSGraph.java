@@ -18,6 +18,7 @@ import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class GTFSGraph extends Graph<Stop> {
@@ -207,5 +208,17 @@ public class GTFSGraph extends Graph<Stop> {
                 .stream()
                 .filter(stop -> stop.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)))
                 .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
+    }
+
+    public Stop getRandomStop() {
+        int index = ThreadLocalRandom.current().nextInt(0, stops.size());
+
+        Iterator<String> iterator = stops.keySet().iterator();
+        String id = null;
+        for (int i = 0; i <= index; i++) {
+            id = iterator.next();
+        }
+
+        return stops.get(id);
     }
 }
