@@ -1,4 +1,4 @@
-package xyz.malkki.gtfsroutefinder.gtfs.utils.model.core;
+package xyz.malkki.gtfsroutefinder.gtfs.model.core;
 
 import org.junit.Before;
 import org.junit.Rule;

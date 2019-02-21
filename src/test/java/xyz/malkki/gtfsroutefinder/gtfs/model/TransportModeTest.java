@@ -1,4 +1,4 @@
-package xyz.malkki.gtfsroutefinder.gtfs.utils.model;
+package xyz.malkki.gtfsroutefinder.gtfs.model;
 
 import org.junit.Test;
 import xyz.malkki.gtfsroutefinder.gtfs.model.TransportMode;
