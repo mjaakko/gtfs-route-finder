@@ -50,8 +50,8 @@ public class GTFSGraph extends Graph<Stop> {
 
         stopByGeohashIndex = Indexer.buildFromColletion(stops, stop -> new Geohash(stop.getLocation().getLatitude(), stop.getLocation().getLongitude(), 3));
 
-        stopTimesByStopIdIndex = Indexer.buildFromColletion(stopTimes, stopTime -> stopTime.getStopId());
-        stopTimesByTripIdIndex = Indexer.buildFromColletion(stopTimes, stopTime -> stopTime.getTripId());
+        stopTimesByStopIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getStopId);
+        stopTimesByTripIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getTripId);
 
         Map<String, List<CalendarDate>> calendarDatesAsMap = new TiraHashMap<>();
         calendarDates.forEach(calendarDate -> {
@@ -63,14 +63,14 @@ public class GTFSGraph extends Graph<Stop> {
         calendars.forEach(calendar -> {
             List<LocalDate> additions = calendarDatesAsMap.getOrDefault(calendar.getServiceId(), Collections.emptyList())
                     .stream()
-                    .filter(calendarDate -> calendarDate.isAvailable())
-                    .map(calendarDate -> calendarDate.getDate())
+                    .filter(CalendarDate::isAvailable)
+                    .map(CalendarDate::getDate)
                     .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
 
             List<LocalDate> exceptions = calendarDatesAsMap.getOrDefault(calendar.getServiceId(), Collections.emptyList())
                     .stream()
                     .filter(calendarDate -> !calendarDate.isAvailable())
-                    .map(calendarDate -> calendarDate.getDate())
+                    .map(CalendarDate::getDate)
                     .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
 
             serviceDates.put(calendar.getServiceId(), new ServiceDates(calendar.getServiceId(), calendar.getStartDate(), calendar.getEndDate(),
