@@ -67,7 +67,7 @@ public class AStarTest {
 
         assertNull(aStar.findPath(new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(long time, String node) {
+            public List<Edge<String>> getEdgesFromNode(long time, String node, Set<String> found) {
                 return Collections.emptyList();
             }
         }, "node1", 0, "node2"));
@@ -89,7 +89,7 @@ public class AStarTest {
 
         Graph<String> graph = new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(long time, String node) {
+            public List<Edge<String>> getEdgesFromNode(long time, String node, Set<String> found) {
                 return graphAsMap.getOrDefault(node, Collections.emptyList()).stream().filter(edge -> edge.getDepartureTime() >= time).collect(Collectors.toList());
             }
         };
@@ -115,7 +115,7 @@ public class AStarTest {
 
         Graph<String> graph = new Graph<String>() {
             @Override
-            public List<Edge<String>> getEdgesFromNode(long time, String node) {
+            public List<Edge<String>> getEdgesFromNode(long time, String node, Set<String> found) {
                 return graphAsMap.getOrDefault(node, Collections.emptyList()).stream().filter(edge -> edge.getDepartureTime() >= time).collect(Collectors.toList());
             }
         };

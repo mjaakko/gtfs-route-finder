@@ -90,9 +90,10 @@ public class GTFSGraph extends Graph<Stop> {
     /**
      * Finds nearby stops that can be reached by walking (distance < 500m)
      * @param stop
+     * @param found List of already found stops
      * @return
      */
-    private List<Edge<Stop>> getWalkingEdgesFromStop(long timeAtStop, Stop stop) {
+    private List<Edge<Stop>> getWalkingEdgesFromStop(long timeAtStop, Stop stop, Set<Stop> found) {
         //Calculate a list of geohashes around the stop
         List<Geohash> nearbyGeohashes = Geohash.getSurroundingGeohashes(
                 BigDecimal.valueOf(stop.getLocation().getLatitude()),
@@ -104,6 +105,8 @@ public class GTFSGraph extends Graph<Stop> {
                 //Filter stops that are too far
                 .filter(stopFromIndex -> stopFromIndex.getLocation().distanceTo(stop.getLocation()) <= 500
                         && !stopFromIndex.getId().equals(stop.getId()))
+                //Filter stops that have been already found
+                .filter(stopFromIndex -> !found.contains(stopFromIndex))
                 .map(walkableStop -> new StopEdge(null, //No public transport route used when walking -> route = null, trip = null
                         null,
                         TransportMode.WALK,
@@ -119,9 +122,10 @@ public class GTFSGraph extends Graph<Stop> {
      * Finds possible public transit journeys departing from the stop after the specified time
      * @param timeAtStop
      * @param stop
+     * @param found List of already found stops
      * @return
      */
-    private List<Edge<Stop>> getPublicTransportEdgesFromStop(long timeAtStop, Stop stop) {
+    private List<Edge<Stop>> getPublicTransportEdgesFromStop(long timeAtStop, Stop stop, Set<Stop> found) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(timeZone);
         gregorianCalendar.setTimeInMillis(timeAtStop);
 
@@ -142,7 +146,8 @@ public class GTFSGraph extends Graph<Stop> {
                                 stopTime.getTripId(),
                                 estimatedDepartureDate,
                                 stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
+                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
+                                found));
             }
             if (serviceDatesForStopTime.runsOn(estimatedDepartureDate.minus(1, ChronoUnit.DAYS))) {
                 edges.addAll(
@@ -151,7 +156,8 @@ public class GTFSGraph extends Graph<Stop> {
                                 stopTime.getTripId(),
                                 estimatedDepartureDate.minus(1, ChronoUnit.DAYS),
                                 stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
+                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
+                                found));
             }
             if (serviceDatesForStopTime.runsOn(estimatedDepartureDate.plus(1, ChronoUnit.DAYS))) {
                 edges.addAll(
@@ -160,23 +166,44 @@ public class GTFSGraph extends Graph<Stop> {
                                 stopTime.getTripId(),
                                 estimatedDepartureDate.plus(1, ChronoUnit.DAYS),
                                 stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId())));
+                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
+                                found));
             }
 
             return edges.stream();
         }).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
     }
 
-    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip) {
+    /**
+     *
+     * @param stop
+     * @param route
+     * @param tripId
+     * @param departureDate
+     * @param departureTime
+     * @param stopTimesOfTrip
+     * @param found
+     * @return
+     */
+    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip, Set<Stop> found) {
         List<StopEdge> edges = new TiraArrayList<>();
 
         long departureTimeMillis = calculateTime(departureDate, departureTime);
 
-        stopTimesOfTrip.forEach(stopTime -> {
-            if (calculateTime(departureDate, stopTime.getArrivalTime()) > departureTimeMillis) {
-                edges.add(new StopEdge(route.getName(), tripId, route.getMode(), stop, stops.get(stopTime.getStopId()), calculateTime(departureDate, stopTime.getArrivalTime()), departureTimeMillis));
+        for (StopTime stopTime : stopTimesOfTrip) {
+            Stop destinationStop = stops.get(stopTime.getStopId());
+
+            long arrivalTimeMillis = calculateTime(departureDate, stopTime.getArrivalTime());
+
+            if (arrivalTimeMillis > departureTimeMillis) {
+                //If the trip would pass through any of already found stops, return empty list as it would be slower to reach the final destination using this route than the route that was used for reaching the previously found route
+                if (found.contains(destinationStop)) {
+                    return Collections.emptyList();
+                }
+
+                edges.add(new StopEdge(route.getName(), tripId, route.getMode(), stop, destinationStop, arrivalTimeMillis, departureTimeMillis));
             }
-        });
+        }
 
         return edges;
     }
@@ -192,9 +219,9 @@ public class GTFSGraph extends Graph<Stop> {
     }
 
     @Override
-    public List<Edge<Stop>> getEdgesFromNode(long time, Stop node) {
-        List<Edge<Stop>> walkingEdges = getWalkingEdgesFromStop(time, node);
-        List<Edge<Stop>> publicTransportEdges = getPublicTransportEdgesFromStop(time, node);
+    public List<Edge<Stop>> getEdgesFromNode(long time, Stop node, Set<Stop> found) {
+        List<Edge<Stop>> walkingEdges = getWalkingEdgesFromStop(time, node, found);
+        List<Edge<Stop>> publicTransportEdges = getPublicTransportEdgesFromStop(time, node, found);
 
         List<Edge<Stop>> edges = new TiraArrayList<>();
         edges.addAll(walkingEdges);

@@ -52,6 +52,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
             found.add(current);
 
             if (current.equals(to)) {
+                //If current node is target node, return list of edges that are used to reach it
                 List<Edge<N>> route = new TiraArrayList<>();
                 N node = current;
                 Edge<N> edge;
@@ -62,7 +63,7 @@ public class AStar<N> implements PathFindingAlgorithm<N> {
                 return route;
             }
 
-            for (Edge<N> edge : graph.getEdgesFromNode(timeAtNode.get(current), current)) {
+            for (Edge<N> edge : graph.getEdgesFromNode(timeAtNode.get(current), current, found)) {
                 N target = edge.getTo();
 
                 if (edge.getDepartureTime() < timeAtNode.get(current)) {
