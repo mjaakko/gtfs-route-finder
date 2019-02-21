@@ -160,6 +160,9 @@ public class TiraHashMap<K, V> extends AbstractMap<K, V> {
 
                 private int elementListIndex = -1;
                 private int elementValueIndex = -1;
+
+                private int removeListIndex = -1;
+                private int removeValueIndex = -1;
                 private Entry<K, V> next = findNext();
 
                 @Override
@@ -170,6 +173,10 @@ public class TiraHashMap<K, V> extends AbstractMap<K, V> {
                 @Override
                 public Entry<K, V> next() {
                     Entry<K, V> value = next;
+
+                    removeListIndex = elementListIndex;
+                    removeValueIndex = elementValueIndex;
+
                     next = findNext();
                     return value;
                 }
@@ -199,11 +206,11 @@ public class TiraHashMap<K, V> extends AbstractMap<K, V> {
 
                 @Override
                 public void remove() {
-                    if (elementListIndex == -1 || elementValueIndex == -1) {
+                    if (removeListIndex == -1 || removeValueIndex == -1) {
                         throw new IllegalStateException();
                     }
 
-                    entries[elementListIndex].remove(elementValueIndex);
+                    entries[removeListIndex].remove(removeValueIndex);
                     itemCount--;
                 }
             };

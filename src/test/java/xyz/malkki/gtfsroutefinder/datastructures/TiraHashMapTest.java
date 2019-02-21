@@ -180,4 +180,73 @@ public class TiraHashMapTest {
         assertEquals(1, map.size());
         assertFalse(map.containsKey("key"));
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEntrySetIteratorCannotRemoveBeforeCallingNext() {
+        map.entrySet().iterator().remove();
+    }
+
+    @Test
+    public void testEntrySetDoesNotContainOtherTypes() {
+        map.put("test", "value");
+
+        assertFalse(map.entrySet().contains(new Object()));
+    }
+
+    @Test
+    public void testCannotRemoveOtherTypesFromEntrySet() {
+        map.put("test", "value");
+
+        assertFalse(map.entrySet().remove(new Object()));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCannotAddNull() {
+        map.put("test", null);
+    }
+
+    @Test
+    public void testDoesNotContainKeyThatHasSameHashcode() {
+        TiraHashMap<TestInteger, String> map = new TiraHashMap<>();
+        map.put(new TestInteger(13), "test");
+
+        assertFalse(map.containsKey(new TestInteger(3)));
+    }
+
+    @Test
+    public void testCannotRemoveWithKeyThatHasSameHashcode() {
+        TiraHashMap<TestInteger, String> map = new TiraHashMap<>();
+        map.put(new TestInteger(13), "test");
+
+        assertNull(map.remove(new TestInteger(3)));
+    }
+
+    @Test
+    public void testCannotGetWithKeyThatHasSameHashcode() {
+        TiraHashMap<TestInteger, String> map = new TiraHashMap<>();
+        map.put(new TestInteger(13), "test");
+
+        assertNull(map.get(new TestInteger(3)));
+    }
+
+    private static class TestInteger {
+        public final int value;
+
+        public TestInteger(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TestInteger that = (TestInteger) o;
+            return value == that.value;
+        }
+
+        @Override
+        public int hashCode() {
+            return value % 10;
+        }
+    }
 }
