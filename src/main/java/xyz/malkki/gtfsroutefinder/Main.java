@@ -81,8 +81,8 @@ public class Main {
             System.out.println("Iteration "+(i+1)+"/"+count);
         }
 
-        System.out.println("AStar found 15 random routes in "+(aStarTotal / 1000)+"s");
-        System.out.println("Dijkstra found 15 random routes in "+(dijkstraTotal / 1000)+"s");
+        System.out.println("AStar found "+count+" random routes in "+(aStarTotal / 1000)+"s");
+        System.out.println("Dijkstra found "+count+" random routes in "+(dijkstraTotal / 1000)+"s");
     }
 
     private static void routeFinder(GTFSGraph gtfsGraph, Scanner scanner, AStar<Stop> aStarRouteFinder) {
