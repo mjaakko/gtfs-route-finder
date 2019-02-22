@@ -60,7 +60,7 @@ public class CalendarDate {
 
     public static List<CalendarDate> parseFromFile(String file) throws IOException {
         return GTFSParser.parseFromFile(file, record -> {
-            String serviceId = record.get("service_id");
+            String serviceId = record.isMapped("\uFEFFservice_id") ? record.get("\uFEFFservice_id") : record.get("service_id");
             LocalDate date = GTFSDateParser.parseDate(record.get("date"));
             boolean available = "1".equals(record.get("exception_type"));
 
