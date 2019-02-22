@@ -249,4 +249,8 @@ public class GTFSGraph extends Graph<Stop> {
 
         return stops.get(id);
     }
+
+    public int getStopCount() {
+        return stops.size();
+    }
 }
