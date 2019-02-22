@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class GTFSGraph extends Graph<Stop> {
     private static final double AVERAGE_WALKING_SPEED_MS = 1.4;
+    private static final double MAX_WALKING_DISTANCE_IN_METERS = 500;
 
     /**
      * Time zone where the graph is based in
@@ -102,11 +103,11 @@ public class GTFSGraph extends Graph<Stop> {
         return nearbyGeohashes.stream()
                 //Get all stops inside the geohashes
                 .flatMap(geohash -> stopByGeohashIndex.getItems(geohash).stream())
-                //Filter stops that are too far
-                .filter(stopFromIndex -> stopFromIndex.getLocation().distanceTo(stop.getLocation()) <= 500
-                        && !stopFromIndex.getId().equals(stop.getId()))
                 //Filter stops that have been already found
                 .filter(stopFromIndex -> !found.contains(stopFromIndex))
+                //Filter stops that are too far
+                .filter(stopFromIndex -> stopFromIndex.getLocation().distanceTo(stop.getLocation()) <= MAX_WALKING_DISTANCE_IN_METERS
+                        && !stopFromIndex.getId().equals(stop.getId()))
                 .map(walkableStop -> new StopEdge(null, //No public transport route used when walking -> route = null, trip = null
                         null,
                         TransportMode.WALK,
