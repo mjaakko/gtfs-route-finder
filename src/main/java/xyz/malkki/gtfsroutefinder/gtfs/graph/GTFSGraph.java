@@ -193,6 +193,10 @@ public class GTFSGraph extends Graph<Stop> {
 
         for (StopTime stopTime : stopTimesOfTrip) {
             Stop destinationStop = stops.get(stopTime.getStopId());
+            if (destinationStop == null) {
+                //This should happen only if the GTFS feed is malformed
+                return Collections.emptyList();
+            }
 
             long arrivalTimeMillis = calculateTime(departureDate, stopTime.getArrivalTime());
 
