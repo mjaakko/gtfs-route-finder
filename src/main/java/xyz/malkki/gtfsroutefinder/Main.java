@@ -1,9 +1,11 @@
 package xyz.malkki.gtfsroutefinder;
 
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
+import xyz.malkki.gtfsroutefinder.datastructures.TiraHashMap;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.algorithms.AStar;
 import xyz.malkki.gtfsroutefinder.graph.algorithms.Dijkstra;
+import xyz.malkki.gtfsroutefinder.graph.algorithms.PathFindingAlgorithm;
 import xyz.malkki.gtfsroutefinder.gtfs.graph.GTFSGraph;
 import xyz.malkki.gtfsroutefinder.gtfs.graph.StopEdge;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
@@ -11,9 +13,12 @@ import xyz.malkki.gtfsroutefinder.gtfs.utils.GTFSGraphBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,7 +47,15 @@ public class Main {
 
                 switch (action) {
                     case 1:
-                        comparison(scanner, gtfsGraph, aStarRouteFinder, dijkstraRouteFinder);
+                        Comparison comparison = new Comparison();
+                        comparison.addAlgorithm("AStar", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (30 * 3.6))));
+                        comparison.addAlgorithm("AStar (pessimistic, unoptimal routes)", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (10 * 3.6))));
+                        comparison.addAlgorithm("Dijkstra", new Dijkstra<>());
+
+                        System.out.println("Number of iterations?");
+                        int count = Integer.parseInt(scanner.nextLine());
+
+                        comparison.runComparison(scanner, gtfsGraph, count);
                         break;
                     case 2:
                         routeFinder(gtfsGraph, scanner, aStarRouteFinder);
@@ -55,34 +68,43 @@ public class Main {
 
     }
 
+    private static class Comparison {
+        private Map<String, PathFindingAlgorithm<Stop>> algorithms = new TiraHashMap<>();
 
-    private static void comparison(Scanner scanner, GTFSGraph gtfsGraph, AStar<Stop> aStar, Dijkstra<Stop> dijkstra) {
-        System.out.println("Number of iterations?");
-        int count = Integer.parseInt(scanner.nextLine());
-
-        List<Stop> origins = Stream.generate(gtfsGraph::getRandomStop).limit(count).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
-        List<Stop> destinations = Stream.generate(gtfsGraph::getRandomStop).limit(count).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
-
-        long aStarTotal = 0;
-        long dijkstraTotal = 0;
-
-        long time = System.currentTimeMillis();
-
-        System.out.println("Random stops selected, starting comparison");
-
-        for (int i = 0; i < count; i++) {
-            long aStarStart = System.nanoTime();
-            aStar.findPath(gtfsGraph, origins.get(i), time, destinations.get(i));
-            aStarTotal += (System.nanoTime() - aStarStart) / 1_000_000;
-
-            long dijkstraStart = System.nanoTime();
-            dijkstra.findPath(gtfsGraph, origins.get(i), time, destinations.get(i));
-            dijkstraTotal += (System.nanoTime() - dijkstraStart) / 1_000_000;
-            System.out.println("Iteration "+(i+1)+"/"+count);
+        public void addAlgorithm(String name, PathFindingAlgorithm<Stop> algorithm) {
+            algorithms.put(name, algorithm);
         }
 
-        System.out.println("AStar found "+count+" random routes in "+(aStarTotal / 1000)+"s");
-        System.out.println("Dijkstra found "+count+" random routes in "+(dijkstraTotal / 1000)+"s");
+        public void runComparison(Scanner scanner, GTFSGraph gtfsGraph, int iterations) {
+            List<Stop> origins = Stream.generate(gtfsGraph::getRandomStop).limit(iterations).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
+            List<Stop> destinations = Stream.generate(gtfsGraph::getRandomStop).limit(iterations).collect(Collectors.toCollection(() -> new TiraArrayList<>()));
+
+            long time = System.currentTimeMillis();
+
+            Map<String, Long> timePerAlgorithm = new TiraHashMap<>();
+            System.out.println("Random stops selected, starting comparison");
+
+            for (int i = 0; i < iterations; i++) {
+                for (Map.Entry<String, PathFindingAlgorithm<Stop>> entry : algorithms.entrySet()) {
+                    String name = entry.getKey();
+                    PathFindingAlgorithm<Stop> algorithm = entry.getValue();
+
+                    long start = System.nanoTime();
+                    algorithm.findPath(gtfsGraph, origins.get(i), time, destinations.get(i));
+                    long end = System.nanoTime();
+
+                    timePerAlgorithm.compute(name, (key, prev) -> (prev == null ? 0 : prev) + (end - start));
+                }
+                System.out.println("Iteration "+(i+1)+"/"+iterations);
+            }
+
+            for (Map.Entry<String, Long> entry : timePerAlgorithm.entrySet()) {
+                String algorithmName = entry.getKey();
+                long timeInSeconds = TimeUnit.NANOSECONDS.toSeconds(entry.getValue());
+
+                System.out.println(String.format("%s found %d random routes in %ds", algorithmName, iterations, timeInSeconds));
+            }
+        }
     }
 
     private static void routeFinder(GTFSGraph gtfsGraph, Scanner scanner, AStar<Stop> aStarRouteFinder) {
