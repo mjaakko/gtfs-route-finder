@@ -8,5 +8,14 @@ Ohjelma sisältää runsaasti yksikkötestejä, jotka testaavat yksittäisten lu
 
 ## Suorituskykytestaus
 
-Ohjelmassa ei vielä ole varsinaista ominaisuutta suorituskyvyn laajempaan testaamiseen, mutta ohjelma tulostaa reitin hakuun kuluneen ajan, kun se 
-suoritetaan. Tämän avulla voidaan tehdä jotain vertailuja siitä, miten syötteen (= joukkoliikenneverkon) koko vaikuttaa ohjelman suorituskykyyn.
+1. Suorita ohjelma komennolla `gradle run`
+2. Valitse toiminto `1 - algorithm comparison`
+3. Valitse toistojen määrä
+
+Ohjelma laskee halutun määrän satunnaisia reittejä ja tulostaa ajan, jota reittien hakemiseen käytettiin tietyllä algoritimilla.
+Esimerkki tulosteesta:
+```
+Dijkstra found 15 random routes in 327s
+AStar (pessimistic, unoptimal routes) found 15 random routes in 316s
+AStar found 15 random routes in 312s
+```
