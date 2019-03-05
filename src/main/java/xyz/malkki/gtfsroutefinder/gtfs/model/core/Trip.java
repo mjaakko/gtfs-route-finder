@@ -57,10 +57,10 @@ public class Trip {
     }
 
     public static List<Trip> parseFromFile(String file) throws IOException {
-        return GTFSParser.parseFromFile(file, record -> {
-            String routeId = record.isMapped("\uFEFFroute_id") ? record.get("\uFEFFroute_id") : record.get("route_id");
-            String serviceId = record.get("service_id");
-            String id = record.get("trip_id");
+        return GTFSParser.parseFromFile(file, (record, headers) -> {
+            String routeId = record.get(headers.get("route_id"));
+            String serviceId = record.get(headers.get("service_id"));
+            String id = record.get(headers.get("trip_id"));
 
             return new Trip(routeId, serviceId, id);
         });

@@ -116,17 +116,17 @@ public class Calendar {
     }
 
     public static List<Calendar> parseFromFile(String file) throws IOException {
-        return GTFSParser.parseFromFile(file, record -> {
-            String serviceId = record.isMapped("\uFEFFservice_id") ? record.get("\uFEFFservice_id") : record.get("service_id");
-            boolean monday = "1".equals(record.get("monday"));
-            boolean tuesday = "1".equals(record.get("tuesday"));
-            boolean wednesday = "1".equals(record.get("wednesday"));
-            boolean thursday = "1".equals(record.get("thursday"));
-            boolean friday = "1".equals(record.get("friday"));
-            boolean saturday = "1".equals(record.get("saturday"));
-            boolean sunday = "1".equals(record.get("sunday"));
-            LocalDate startDate = GTFSDateParser.parseDate(record.get("start_date"));
-            LocalDate endDate = GTFSDateParser.parseDate(record.get("end_date"));
+        return GTFSParser.parseFromFile(file, (record, headers) -> {
+            String serviceId = record.get(headers.get("service_id"));
+            boolean monday = "1".equals(record.get(headers.get("monday")));
+            boolean tuesday = "1".equals(record.get(headers.get("tuesday")));
+            boolean wednesday = "1".equals(record.get(headers.get("wednesday")));
+            boolean thursday = "1".equals(record.get(headers.get("thursday")));
+            boolean friday = "1".equals(record.get(headers.get("friday")));
+            boolean saturday = "1".equals(record.get(headers.get("saturday")));
+            boolean sunday = "1".equals(record.get(headers.get("sunday")));
+            LocalDate startDate = GTFSDateParser.parseDate(record.get(headers.get("start_date")));
+            LocalDate endDate = GTFSDateParser.parseDate(record.get(headers.get("end_date")));
 
             return new Calendar(serviceId, monday, tuesday, wednesday, thursday, friday, saturday, sunday, startDate, endDate);
         });

@@ -63,12 +63,12 @@ public class StopTime {
     }
 
     public static List<StopTime> parseFromFile(String file) throws IOException {
-        return GTFSParser.parseFromFile(file, record -> {
-            String tripId = record.get("\uFEFFtrip_id");
-            int arrivalTime = GTFSTimeParser.parseTime(record.get("arrival_time"));
-            int departureTime = GTFSTimeParser.parseTime(record.get("departure_time"));
-            String stopId = record.get("stop_id");
-            int stopSequence = Integer.parseInt(record.get("stop_sequence"));
+        return GTFSParser.parseFromFile(file, (record, headers) -> {
+            String tripId = record.get(headers.get("trip_id"));
+            int arrivalTime = GTFSTimeParser.parseTime(record.get(headers.get("arrival_time")));
+            int departureTime = GTFSTimeParser.parseTime(record.get(headers.get("departure_time")));
+            String stopId = record.get(headers.get("stop_id"));
+            int stopSequence = Integer.parseInt(record.get(headers.get("stop_sequence")));
 
             return new StopTime(tripId, arrivalTime, departureTime, stopId, stopSequence);
         });

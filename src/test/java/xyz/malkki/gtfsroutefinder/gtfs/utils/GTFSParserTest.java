@@ -12,8 +12,8 @@ public class GTFSParserTest {
     public void testParsing() throws IOException {
         String testFilePath = getClass().getClassLoader().getResource("test.csv").getFile();
 
-        List<String[]> data = GTFSParser.parseFromFile(testFilePath, record -> {
-            return new String[]{ record.get("column1"), record.get("column2")};
+        List<String[]> data = GTFSParser.parseFromFile(testFilePath, (record, headers) -> {
+            return new String[]{ record.get(headers.get("column1")), record.get(headers.get("column2"))};
         });
 
         assertArrayEquals(new String[]{ "test1_1", "test1_2" }, data.get(0));

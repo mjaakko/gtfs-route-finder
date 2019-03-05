@@ -63,11 +63,11 @@ public class Stop {
     }
 
     public static List<Stop> parseFromFile(String file) throws IOException {
-        return GTFSParser.parseFromFile(file, record -> {
-            String id = record.isMapped("\uFEFFstop_id") ? record.get("\uFEFFstop_id") : record.get("stop_id");
-            String name = record.get("stop_name");
-            double latitude = Double.parseDouble(record.get("stop_lat"));
-            double longitude = Double.parseDouble(record.get("stop_lon"));
+        return GTFSParser.parseFromFile(file, (record, headers) -> {
+            String id = record.get(headers.get("stop_id"));
+            String name = record.get(headers.get("stop_name"));
+            double latitude = Double.parseDouble(record.get(headers.get("stop_lat")));
+            double longitude = Double.parseDouble(record.get(headers.get("stop_lon")));
 
             return new Stop(id, name, new LatLng(latitude, longitude));
         });
