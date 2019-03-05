@@ -3,9 +3,19 @@ package xyz.malkki.gtfsroutefinder.datastructures;
 import java.util.*;
 
 public class TiraHashMap<K, V> extends AbstractMap<K, V> {
-    private TiraLinkedList<Entry<K,V>>[] entries = new TiraLinkedList[10];
+    private TiraLinkedList<Entry<K,V>>[] entries;
+    private int defaultSize;
 
     private int itemCount = 0;
+
+    public TiraHashMap() {
+        this(10);
+    }
+
+    public TiraHashMap(int defaultSize) {
+        this.defaultSize = defaultSize;
+        this.entries = new TiraLinkedList[defaultSize];
+    }
 
     private void increaseCapacity() {
         TiraLinkedList<Entry<K,V>>[] newArray = new TiraLinkedList[2 * (1 + entries.length)];
@@ -34,7 +44,7 @@ public class TiraHashMap<K, V> extends AbstractMap<K, V> {
 
     @Override
     public void clear() {
-        entries = new TiraLinkedList[10];
+        entries = new TiraLinkedList[defaultSize];
 
         itemCount = 0;
     }

@@ -12,7 +12,7 @@ public class TiraHashMapTest {
 
     @Before
     public void setup() {
-        map = new TiraHashMap<>();
+        map = new TiraHashMap<>(1);
     }
 
     @Test
