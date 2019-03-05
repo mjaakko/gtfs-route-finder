@@ -8,15 +8,13 @@ import xyz.malkki.gtfsroutefinder.datastructures.TiraLinkedList;
 import xyz.malkki.gtfsroutefinder.graph.Edge;
 import xyz.malkki.gtfsroutefinder.graph.Graph;
 import xyz.malkki.gtfsroutefinder.gtfs.model.TransportMode;
-import xyz.malkki.gtfsroutefinder.gtfs.model.core.*;
 import xyz.malkki.gtfsroutefinder.gtfs.model.core.Calendar;
+import xyz.malkki.gtfsroutefinder.gtfs.model.core.*;
 import xyz.malkki.gtfsroutefinder.gtfs.utils.ServiceDates;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -54,13 +52,13 @@ public class GTFSGraph extends Graph<Stop> {
         stopTimesByStopIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getStopId);
         stopTimesByTripIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getTripId);
 
-        Map<String, List<CalendarDate>> calendarDatesAsMap = new TiraHashMap<>();
+        Map<String, List<CalendarDate>> calendarDatesAsMap = new TiraHashMap<>(calendars.size());
         calendarDates.forEach(calendarDate -> {
             List<CalendarDate> list = calendarDatesAsMap.computeIfAbsent(calendarDate.getServiceId(), k -> new TiraLinkedList<>());
             list.add(calendarDate);
         });
 
-        serviceDates = new TiraHashMap<>();
+        serviceDates = new TiraHashMap<>(calendars.size());
         calendars.forEach(calendar -> {
             List<LocalDate> additions = calendarDatesAsMap.getOrDefault(calendar.getServiceId(), Collections.emptyList())
                     .stream()
@@ -78,13 +76,13 @@ public class GTFSGraph extends Graph<Stop> {
                     calendar.isMonday(), calendar.isTuesday(), calendar.isWednesday(), calendar.isThursday(), calendar.isFriday(), calendar.isSaturday(), calendar.isSunday(), additions, exceptions));
         });
 
-        this.stops = new TiraHashMap<>(/*stops.size()*/);
+        this.stops = new TiraHashMap<>(stops.size());
         stops.forEach(stop -> this.stops.put(stop.getId(), stop));
 
-        this.routes = new TiraHashMap<>(/*routes.size()*/);
+        this.routes = new TiraHashMap<>(routes.size());
         routes.forEach(route -> this.routes.put(route.getId(), route));
 
-        this.trips = new TiraHashMap<>(/*trips.size()*/);
+        this.trips = new TiraHashMap<>(trips.size());
         trips.forEach(trip -> this.trips.put(trip.getId(), trip));
     }
 
@@ -140,35 +138,27 @@ public class GTFSGraph extends Graph<Stop> {
 
             List<StopEdge> edges = new TiraArrayList<>();
 
-            if (serviceDatesForStopTime.runsOn(estimatedDepartureDate)) {
-                edges.addAll(
-                        getPossibleDestinations(stop,
-                                routes.get(trips.get(stopTime.getTripId()).getRouteId()),
-                                stopTime.getTripId(),
-                                estimatedDepartureDate,
-                                stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
-                                found));
-            }
-            if (serviceDatesForStopTime.runsOn(estimatedDepartureDate.minus(1, ChronoUnit.DAYS))) {
-                edges.addAll(
-                        getPossibleDestinations(stop,
-                                routes.get(trips.get(stopTime.getTripId()).getRouteId()),
-                                stopTime.getTripId(),
-                                estimatedDepartureDate.minus(1, ChronoUnit.DAYS),
-                                stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
-                                found));
-            }
-            if (serviceDatesForStopTime.runsOn(estimatedDepartureDate.plus(1, ChronoUnit.DAYS))) {
-                edges.addAll(
-                        getPossibleDestinations(stop,
-                                routes.get(trips.get(stopTime.getTripId()).getRouteId()),
-                                stopTime.getTripId(),
-                                estimatedDepartureDate.plus(1, ChronoUnit.DAYS),
-                                stopTime.getArrivalTime(),
-                                stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
-                                found));
+            //Optimization: list of best arrival times (to ignore routes that would arrive to these stops later than the previously found best route)
+            //This optimization is not optimal but should decrease the amount of possible returned edges
+            Map<String, Long> bestArrivalTime = new TiraHashMap<>();
+
+            /**
+             * Check possible departure dates that are: yesterday, today and the day after today
+             */
+            for (int i = -1; i <= 1; i++) {
+                LocalDate departureDate = estimatedDepartureDate.plus(i, ChronoUnit.DAYS);
+
+                if (serviceDatesForStopTime.runsOn(departureDate)) {
+                    edges.addAll(
+                            getPossibleDestinations(stop,
+                                    routes.get(trips.get(stopTime.getTripId()).getRouteId()),
+                                    stopTime.getTripId(),
+                                    departureDate,
+                                    stopTime.getArrivalTime(),
+                                    stopTimesByTripIdIndex.getItems(stopTime.getTripId()),
+                                    found,
+                                    bestArrivalTime));
+                }
             }
 
             return edges.stream();
@@ -186,7 +176,7 @@ public class GTFSGraph extends Graph<Stop> {
      * @param found
      * @return
      */
-    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip, Set<Stop> found) {
+    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip, Set<Stop> found, Map<String, Long> bestArrivalTime) {
         List<StopEdge> edges = new TiraArrayList<>();
 
         long departureTimeMillis = calculateTime(departureDate, departureTime);
@@ -198,7 +188,13 @@ public class GTFSGraph extends Graph<Stop> {
                 return Collections.emptyList();
             }
 
+            /**
+             * Return empty list if better route was already found
+             */
             long arrivalTimeMillis = calculateTime(departureDate, stopTime.getArrivalTime());
+            if (arrivalTimeMillis > bestArrivalTime.getOrDefault(destinationStop.getId(), Long.MAX_VALUE)) {
+                return Collections.emptyList();
+            }
 
             if (arrivalTimeMillis > departureTimeMillis) {
                 //If the trip would pass through any of already found stops, return empty list as it would be slower to reach the final destination using this route than the route that was used for reaching the previously found route
@@ -206,6 +202,7 @@ public class GTFSGraph extends Graph<Stop> {
                     return Collections.emptyList();
                 }
 
+                bestArrivalTime.put(destinationStop.getId(), arrivalTimeMillis);
                 edges.add(new StopEdge(route.getName(), tripId, route.getMode(), stop, destinationStop, arrivalTimeMillis, departureTimeMillis));
             }
         }
@@ -228,7 +225,7 @@ public class GTFSGraph extends Graph<Stop> {
         List<Edge<Stop>> walkingEdges = getWalkingEdgesFromStop(time, node, found);
         List<Edge<Stop>> publicTransportEdges = getPublicTransportEdgesFromStop(time, node, found);
 
-        List<Edge<Stop>> edges = new TiraArrayList<>();
+        List<Edge<Stop>> edges = new TiraArrayList<>(walkingEdges.size() + publicTransportEdges.size());
         edges.addAll(walkingEdges);
         edges.addAll(publicTransportEdges);
 
