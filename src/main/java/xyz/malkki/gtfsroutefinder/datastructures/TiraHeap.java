@@ -100,6 +100,9 @@ public class TiraHeap<E> extends AbstractQueue<E> {
     @Override
     public E poll() {
         E head = (E)array[0];
+        if (head == null) {
+            return null;
+        }
 
         swap(array, 0, --itemCount);
         heapify(array, 0);

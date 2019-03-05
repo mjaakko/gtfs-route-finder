@@ -32,6 +32,18 @@ public class TiraHeapTest {
     }
 
     @Test
+    public void testPollingEmptyHeapDoesNotSetSizeToNegative() {
+        Integer i1 = heap.poll();
+        Integer i2 = heap.poll();
+        Integer i3 = heap.poll();
+
+        assertNull(i1);
+        assertNull(i2);
+        assertNull(i3);
+        assertEquals(0, heap.size());
+    }
+
+    @Test
     public void testPeek() {
         heap.offer(9);
         heap.offer(3);
