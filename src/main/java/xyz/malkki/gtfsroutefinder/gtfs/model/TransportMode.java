@@ -38,6 +38,11 @@ public enum TransportMode {
         } else if (type >= 1400 && type < 1500) {
             return TransportMode.FUNICULAR;
         } else if (type >= 1500 && type < 1700) {
+            //In some GTFS feeds, minibuses are marked as taxis
+            if (type == 1501) {
+                return TransportMode.BUS;
+            }
+
             throw new IllegalArgumentException("Unsupported type " + type);
         }
         
