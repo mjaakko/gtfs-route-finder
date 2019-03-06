@@ -20,6 +20,14 @@ import java.util.stream.Stream;
 public class GTFSParser {
     private GTFSParser() {}
 
+    /**
+     * Parses a single file of GTFS feed
+     * @param file File to parse
+     * @param parser Function that maps a single row of the file to a value
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     public static <T> List<T> parseFromFile(String file, BiFunction<CSVRecord, Map<String, Integer>, T> parser) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             CSVParser csvParser = CSVParser.parse(reader, CSVFormat.RFC4180.withFirstRecordAsHeader());

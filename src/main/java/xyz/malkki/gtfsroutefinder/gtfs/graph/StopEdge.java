@@ -6,6 +6,9 @@ import xyz.malkki.gtfsroutefinder.gtfs.model.core.Stop;
 
 import java.util.Objects;
 
+/**
+ * Describes a journey from one stop to another
+ */
 public class StopEdge extends Edge<Stop> {
     private String usedRoute;
     private String usedTripId;
@@ -25,12 +28,20 @@ public class StopEdge extends Edge<Stop> {
         this.departureTime = departureTime;
     }
 
+    /**
+     * Gets the public transportation route name that was used for this edge
+     * @return
+     */
     public String getUsedRoute() {
         return usedRoute;
     }
 
     public String getUsedTripId() { return usedTripId; }
 
+    /**
+     * Gets the transportation mode (e.g. walking, taking a bus..) that was used for this edge
+     * @return
+     */
     public TransportMode getTransportMode() {
         return transportMode;
     }

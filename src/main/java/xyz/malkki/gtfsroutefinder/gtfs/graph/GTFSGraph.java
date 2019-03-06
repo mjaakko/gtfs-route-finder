@@ -44,6 +44,16 @@ public class GTFSGraph extends Graph<Stop> {
 
     private Map<String, Trip> trips;
 
+    /**
+     * Construct a new GTFS graph
+     * @param timeZone Time zone where the graph is based
+     * @param routes List of routes
+     * @param trips List of trips
+     * @param stops List of stops
+     * @param stopTimes List of arrival and departure times at stops
+     * @param calendars List of date ranges when public transportation services are available
+     * @param calendarDates List of exceptions to public transportation services
+     */
     public GTFSGraph(TimeZone timeZone, List<Route> routes, List<Trip> trips, List<Stop> stops, List<StopTime> stopTimes, List<Calendar> calendars, List<CalendarDate> calendarDates) {
         this.timeZone = timeZone;
 
@@ -88,7 +98,7 @@ public class GTFSGraph extends Graph<Stop> {
 
     /**
      * Finds nearby stops that can be reached by walking (distance < 500m)
-     * @param stop
+     * @param stop Search stops near this stop
      * @param found List of already found stops
      * @return
      */
@@ -119,8 +129,8 @@ public class GTFSGraph extends Graph<Stop> {
 
     /**
      * Finds possible public transit journeys departing from the stop after the specified time
-     * @param timeAtStop
-     * @param stop
+     * @param timeAtStop Arrival time to the stop (i.e. earliest possible departure time from the stop)
+     * @param stop Get departures from this stop
      * @param found List of already found stops
      * @return
      */
@@ -166,7 +176,7 @@ public class GTFSGraph extends Graph<Stop> {
     }
 
     /**
-     *
+     * Finds possible destinations using a specific route from specfic stop at specific time
      * @param stop
      * @param route
      * @param tripId
@@ -211,6 +221,12 @@ public class GTFSGraph extends Graph<Stop> {
     }
 
 
+    /**
+     * Calculates time in milliseconds from date and time in seconds since midnight
+     * @param date Date
+     * @param secondsSinceMidnight Time in seconds since midnight of the specified date
+     * @return
+     */
     private long calculateTime(LocalDate date, long secondsSinceMidnight) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(timeZone);
         gregorianCalendar.setTimeInMillis(0);
@@ -220,6 +236,13 @@ public class GTFSGraph extends Graph<Stop> {
         return gregorianCalendar.getTimeInMillis();
     }
 
+    /**
+     * Finds possible edges from the specified stop at specified time
+     * @param time Departure time from node
+     * @param node Departure stop
+     * @param found List of already found stops, used for optimization
+     * @return
+     */
     @Override
     public List<Edge<Stop>> getEdgesFromNode(long time, Stop node, Set<Stop> found) {
         List<Edge<Stop>> walkingEdges = getWalkingEdgesFromStop(time, node, found);
@@ -232,6 +255,11 @@ public class GTFSGraph extends Graph<Stop> {
         return edges;
     }
 
+    /**
+     * Finds a list of stops by name
+     * @param name
+     * @return
+     */
     public List<Stop> findStopsByName(String name) {
         return stops.values()
                 .stream()
@@ -239,6 +267,10 @@ public class GTFSGraph extends Graph<Stop> {
                 .collect(Collectors.toCollection(() -> new TiraArrayList<>()));
     }
 
+    /**
+     * Gets a random stop from the graph
+     * @return A random stop
+     */
     public Stop getRandomStop() {
         int index = ThreadLocalRandom.current().nextInt(0, stops.size());
 
@@ -251,6 +283,9 @@ public class GTFSGraph extends Graph<Stop> {
         return stops.get(id);
     }
 
+    /**
+     * @return Number of stops in the graph
+     */
     public int getStopCount() {
         return stops.size();
     }

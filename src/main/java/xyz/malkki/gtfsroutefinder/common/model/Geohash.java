@@ -18,7 +18,7 @@ public class Geohash {
      * Creates a geohash with specified level from given coordinates
      * @param latitude Latitude
      * @param longitude Longitude
-     * @param geohashLevel Geohash level
+     * @param geohashLevel Geohash level (i.e. number of decimals to include in geohash)
      */
     public Geohash(BigDecimal latitude, BigDecimal longitude, int geohashLevel) {
         String[] latitudeString = latitude.setScale(geohashLevel, RoundingMode.DOWN).toPlainString().split("\\.");
