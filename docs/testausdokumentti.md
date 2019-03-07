@@ -45,7 +45,7 @@ pessimistinen A*-algoritmi ei siis anna täysin optimaalista reittiä.
 | **Lappeenranta** | 813     | 3s       | 3s   | 3s
 | **Tampere**      | 3058    | 41s      | 40s  | 39s
 
-![][tulokset.svg]
+![](./tulokset.svg)
 
 Kuten kuvaajista huomataan, Dijkstran algoritmi on jokaisessa tapauksessa hitain. Ero A*-algoritmiin ei kuitenkaan ole suuri ja 
 tämä johtuu enimmäkseen siitä, että joukkoliikennedatalle sopivan heuristiikkafunktion luominen on hankalaa, joten A*-algoritmi 
