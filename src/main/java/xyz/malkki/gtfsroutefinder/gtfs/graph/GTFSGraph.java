@@ -161,6 +161,7 @@ public class GTFSGraph extends Graph<Stop> {
                 if (serviceDatesForStopTime.runsOn(departureDate)) {
                     edges.addAll(
                             getPossibleDestinations(stop,
+                                    timeAtStop,
                                     routes.get(trips.get(stopTime.getTripId()).getRouteId()),
                                     stopTime.getTripId(),
                                     departureDate,
@@ -177,19 +178,24 @@ public class GTFSGraph extends Graph<Stop> {
 
     /**
      * Finds possible destinations using a specific route from specfic stop at specific time
-     * @param stop
-     * @param route
+     * @param stop Origin stop
+     * @param timeAtStop Current time
+     * @param route Route name (used only when printing the route for user)
      * @param tripId
      * @param departureDate
      * @param departureTime
-     * @param stopTimesOfTrip
-     * @param found
+     * @param stopTimesOfTrip List of arrival and departure times of the trip that is used
+     * @param found List of already found stops
      * @return
      */
-    private List<StopEdge> getPossibleDestinations(Stop stop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip, Set<Stop> found, Map<String, Long> bestArrivalTime) {
+    private List<StopEdge> getPossibleDestinations(Stop stop, long timeAtStop, Route route, String tripId, LocalDate departureDate, long departureTime, List<StopTime> stopTimesOfTrip, Set<Stop> found, Map<String, Long> bestArrivalTime) {
         List<StopEdge> edges = new TiraArrayList<>();
 
         long departureTimeMillis = calculateTime(departureDate, departureTime);
+        //If the public transport service departs from the stop before current time, that service cannot be used for the route -> return empty list
+        if (departureTimeMillis < timeAtStop) {
+            return Collections.emptyList();
+        }
 
         for (StopTime stopTime : stopTimesOfTrip) {
             Stop destinationStop = stops.get(stopTime.getStopId());
@@ -198,12 +204,10 @@ public class GTFSGraph extends Graph<Stop> {
                 return Collections.emptyList();
             }
 
-            /**
-             * Return empty list if better route was already found
-             */
+             //Don't add new edge if a better route to the destination was already found
             long arrivalTimeMillis = calculateTime(departureDate, stopTime.getArrivalTime());
             if (arrivalTimeMillis > bestArrivalTime.getOrDefault(destinationStop.getId(), Long.MAX_VALUE)) {
-                return Collections.emptyList();
+                continue;
             }
 
             if (arrivalTimeMillis > departureTimeMillis) {
