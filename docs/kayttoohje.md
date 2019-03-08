@@ -1,9 +1,9 @@
 1. Lataa ohjelman [jar-tiedosto](https://github.com/mjaakko/gtfs-route-finder/releases/download/loppupalautus/gtfs-route-finder-1.0-SNAPSHOT.jar)
 2. Lataa jokin GTFS-syöte ja pura se haluamaasi kansioon
-   * [Täältä](https://api.digitransit.fi/routing-data/v2/finland/) löytyy joidenkin suomalaisten kaupunkien GTFS-syötteitä. Ainakin `tampere.zip` ja 
-`HSL.zip` tutkitusti toimivat tällä ohjelmalla.
+   * [Täältä](https://api.digitransit.fi/routing-data/v2/finland/) löytyy joidenkin suomalaisten kaupunkien GTFS-syötteitä. Ainakin `tampere.zip` ja `HSL.zip` tutkitusti toimivat tällä ohjelmalla.
+   * GTFS-syötteestä pitää löytyä ainakin tiedostot `stops.txt`, `trips.txt`, `calendar.txt`, `routes.txt` ja `stop_times.txt`
 3. Aja ohjelma komennolla `java -jar gtfs-route-finder-1.0-SNAPSHOT.jar`
-4. Kun ohjelma sanoo: `Location for GTFS feed:`, syötä aiemmin lataamasi GTFS-syötteen sijainti
+4. Kun ohjelma sanoo: `Location for GTFS feed:`, syötä aiemmin purkamasi GTFS-syötteen sijainti
 5. Ohjelma kysyy haluamasi toiminnon
 
 ## 1 - Algoritmien vertailu
