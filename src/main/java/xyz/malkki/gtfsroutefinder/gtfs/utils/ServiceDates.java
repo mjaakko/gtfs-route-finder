@@ -58,7 +58,7 @@ public class ServiceDates {
         this.exceptions.addAll(exceptions);
     }
 
-    private String getServiceId() {
+    public String getServiceId() {
         return serviceId;
     }
 

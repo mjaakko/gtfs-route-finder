@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +18,11 @@ public class ServiceDatesTest {
         serviceDates = new ServiceDates("test", LocalDate.of(2019, 1, 1), LocalDate.of(2019, 1, 7),
                 false, false, false, true, true, false, false,
                 Arrays.asList(LocalDate.of(2019, 1, 15)), Arrays.asList(LocalDate.of(2019, 1, 4)));
+    }
+
+    @Test
+    public void testServiceId() {
+        assertEquals("test",serviceDates.getServiceId());
     }
 
     @Test
@@ -46,5 +53,18 @@ public class ServiceDatesTest {
     @Test
     public void testServiceRunsOnAvailableDayOfWeek() {
         assertTrue(serviceDates.runsOn(LocalDate.of(2019, 1, 3)));
+    }
+
+    @Test
+    public void testAllWeekdays() {
+        serviceDates = new ServiceDates("test", LocalDate.of(2019, 1, 1), LocalDate.of(2019, 1, 7),
+                true, true, true, true, true, true, true,
+                Collections.emptyList(), Collections.emptyList());
+
+        LocalDate date = LocalDate.of(2019, 1, 1);
+        for (int i = 0; i < 7; i++) {
+            assertTrue(serviceDates.runsOn(date));
+            date = date.plus(1, ChronoUnit.DAYS);
+        }
     }
 }
