@@ -20,10 +20,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
+    private static final int ASTAR_HEURISTIC_SPEED_MS = 30;
+    private static final int ASTAR_PESSIMISTIC_SPEED_MS = 5;
+
+    private static final BiFunction<Stop, Stop, Long> ASTAR_HEURISTIC = (a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / ASTAR_HEURISTIC_SPEED_MS);
+    private static final BiFunction<Stop, Stop, Long> ASTAR_HEURISTIC_PESSIMISTIC = (a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / ASTAR_PESSIMISTIC_SPEED_MS);
+
     public static void main(String[] args) throws IOException {
         if (args.length >= 3 && "--time-complexity-test".equals(args[0])) {
             String outputFile = args[1];
@@ -50,7 +57,7 @@ public class Main {
         GTFSGraph gtfsGraph = GTFSGraphBuilder.buildFromFiles(path);
         System.out.println("Graph built in "+((System.nanoTime() - start) / 1_000_000)+"ms");
 
-        AStar<Stop> aStarRouteFinder = new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (30 * 3.6)));
+        AStar<Stop> aStarRouteFinder = new AStar<>(ASTAR_HEURISTIC);
 
         loop: while (true) {
             System.out.println("Select action\n\t1 - algorithm comparison\n\t2 - route finder\n\t3 - quit");
@@ -60,8 +67,8 @@ public class Main {
                 switch (action) {
                     case 1:
                         AlgorithmComparison comparison = new AlgorithmComparison();
-                        comparison.addAlgorithm("AStar", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (30 * 3.6))));
-                        comparison.addAlgorithm("AStar (pessimistic, unoptimal routes)", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (10 * 3.6))));
+                        comparison.addAlgorithm("AStar", new AStar<>(ASTAR_HEURISTIC));
+                        comparison.addAlgorithm("AStar (pessimistic, unoptimal routes)", new AStar<>(ASTAR_HEURISTIC_PESSIMISTIC));
                         comparison.addAlgorithm("Dijkstra", new Dijkstra<>());
 
                         System.out.println("Number of iterations?");
@@ -88,8 +95,8 @@ public class Main {
         public TimeComplexityTest(String... feeds) {
             this.feeds = feeds;
 
-            algorithms.put("AStar", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (30 * 3.6))));
-            algorithms.put("AStar (pessimistic, unoptimal routes)", new AStar<>((a,b) -> 1000 * Math.round(a.getLocation().distanceTo(b.getLocation()) / (10 * 3.6))));
+            algorithms.put("AStar", new AStar<>(ASTAR_HEURISTIC));
+            algorithms.put("AStar (pessimistic, unoptimal routes)", new AStar<>(ASTAR_HEURISTIC_PESSIMISTIC));
             algorithms.put("Dijkstra", new Dijkstra<>());
         }
 
