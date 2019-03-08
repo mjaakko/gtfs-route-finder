@@ -1,0 +1,10 @@
+xyz.malkki.gtfsroutefinder
+xyz.malkki.gtfsroutefinder.common.model
+xyz.malkki.gtfsroutefinder.common.utils
+xyz.malkki.gtfsroutefinder.datastructures
+xyz.malkki.gtfsroutefinder.graph
+xyz.malkki.gtfsroutefinder.graph.algorithms
+xyz.malkki.gtfsroutefinder.gtfs.graph
+xyz.malkki.gtfsroutefinder.gtfs.model
+xyz.malkki.gtfsroutefinder.gtfs.model.core
+xyz.malkki.gtfsroutefinder.gtfs.utils
