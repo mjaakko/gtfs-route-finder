@@ -20,6 +20,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class GTFSGraph extends Graph<Stop> {
+    private static final int STOP_INDEX_GEOHASH_LEVEL = 2;
+
     private static final double AVERAGE_WALKING_SPEED_MS = 1.4;
     private static final double MAX_WALKING_DISTANCE_IN_METERS = 500;
 
@@ -57,7 +59,7 @@ public class GTFSGraph extends Graph<Stop> {
     public GTFSGraph(TimeZone timeZone, List<Route> routes, List<Trip> trips, List<Stop> stops, List<StopTime> stopTimes, List<Calendar> calendars, List<CalendarDate> calendarDates) {
         this.timeZone = timeZone;
 
-        stopByGeohashIndex = Indexer.buildFromColletion(stops, stop -> new Geohash(stop.getLocation().getLatitude(), stop.getLocation().getLongitude(), 3));
+        stopByGeohashIndex = Indexer.buildFromColletion(stops, stop -> new Geohash(stop.getLocation().getLatitude(), stop.getLocation().getLongitude(), STOP_INDEX_GEOHASH_LEVEL));
 
         stopTimesByStopIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getStopId);
         stopTimesByTripIdIndex = Indexer.buildFromColletion(stopTimes, StopTime::getTripId);
@@ -106,7 +108,7 @@ public class GTFSGraph extends Graph<Stop> {
         //Calculate a list of geohashes around the stop
         List<Geohash> nearbyGeohashes = Geohash.getSurroundingGeohashes(
                 BigDecimal.valueOf(stop.getLocation().getLatitude()),
-                BigDecimal.valueOf(stop.getLocation().getLongitude()), 3);
+                BigDecimal.valueOf(stop.getLocation().getLongitude()), STOP_INDEX_GEOHASH_LEVEL);
 
         return nearbyGeohashes.stream()
                 //Get all stops inside the geohashes
