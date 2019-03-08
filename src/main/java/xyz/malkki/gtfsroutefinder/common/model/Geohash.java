@@ -97,8 +97,8 @@ public class Geohash {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 geohashes.add(new Geohash(
-                        latitude.add(delta.multiply(BigDecimal.valueOf(i))),
-                        longitude.add(delta.multiply(BigDecimal.valueOf(j))), geohashLevel));
+                        latitude.setScale(geohashLevel, RoundingMode.HALF_DOWN).add(delta.multiply(BigDecimal.valueOf(i))),
+                        longitude.setScale(geohashLevel, RoundingMode.HALF_DOWN).add(delta.multiply(BigDecimal.valueOf(j))), geohashLevel));
             }
         }
 
