@@ -8,6 +8,7 @@ Tietorakenteet ja algoritmit"
 * [Suoritettava jar-tiedosto](https://github.com/mjaakko/gtfs-route-finder/releases/download/loppupalautus/gtfs-route-finder-1.0-SNAPSHOT.jar)
 * [Javadoc](http://malkki.xyz/gtfs-route-finder/)
 
+### Dokumentaatio 
 
 * [Määrittelydokumentti](docs/maarittelydokumentti.md)
 * [Toteutusdokumentti](docs/toteutusdokumentti.md)
