@@ -18,8 +18,18 @@ Lisäksi ohjelma sisältää toteutuksen Dijkstran algoritmista, joka on tehty a
 
 Saavutettujen aikavaativuuksien arviointi oli hankalaa, koska joukkoliikennedatasta muodostettu verkko on hankala tallentaa 
 esimerkiksi vieruslistoina, eikä verkon kaarille löydy selkeää määrää, koska jokaisesta solmusta lähtevät kaaret riippuvat 
-ajanhetkestä, jolla solmuun saavutaan. Koodista tehdyn karkean analyysin perusteella pahimman tapauksen aikavaatimukseksi tulee 
-`O(|V|^2log|V|)`. Käytännössä keskimääräinen aikavaativuus pitäisi kuitenkin olla huomattavasti pienempi. 
+ajanhetkestä, jolla solmuun saavutaan. 
+Koodista tehdyn karkean analyysin perusteella sekä A*-algoritmin ja Dijkstran algoritmin pahimman tapauksen aikavaatimukseksi tulee `O(|V|^2log|V|)`, jossa `|V|` on pysäkkien määrä verkossa. Käytännössä keskimääräinen aikavaativuus pitäisi kuitenkin olla huomattavasti pienempi. 
+
+## Työn puutteita ja kehitysideoita
+
+* Ohjelman käyttöliittymä ei ole kovin helppokäyttöinen
+* Ohjelma voisi antaa käyttäjän valita ainakin lähtöajan, jolloin reittiä haetaan, sekä mahdollisesti muita parametrejä reitinhaulle (esim. turhien vaihtojen välttämiseksi)
+* Algoritmi usein löytää reitin, joka sisältää "turhia" pysähdyksiä (esim. *Ruoholahti -> Kamppi -> Rautatientori*, kun parempi reitti olisi *Ruoholahti -> Rautatientori*)
+  * Tämän voisi luultavasti estää niin, että algoritmi pitää kirjaa linjoista, joilla tämän hetkiselle pysäkille on saavuttu ja hylkäämällä myöhemmin reitit, jotka käyttäisivät tätä samaa linjaa
+  * ...tai yksinkertaisemmin filtteröimällä ohjelman tulostuksesta turhat pysähdykset
+* Algoritmien toimintaa voisi nopeuttaa esikäsittelemällä dataa paremmin
+  * Esim. tällä hetkellä algoritmi hakee jokaiselta pysäkiltä 500m etäisyydellä olevat vaihtopysäkit ja tämä operaatio vie pahimmassa tapauksessa `O(|V|)` ajan. Esikäsittelyssä pysäkeille voisi tehdä staattisen listan vaihtopysäkeistä, jonka voisi hakea ajassa `O(1)`.
 
 ## Lähteet
 
