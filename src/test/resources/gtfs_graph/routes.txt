@@ -1,0 +1,2 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url
+3002Y,HSL,Y,Helsinki-Siuntio,,109,https://www.vr.fi/cs/vr/fi/paakaupunkiseudun_lahiliikenne

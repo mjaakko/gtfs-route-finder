@@ -1,0 +1,9 @@
+﻿trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled,timepoint
+3002Y_20190304_Ke_1_0553,05:53:00,05:53:00,1020502,1,"Siuntio via Kirkkonummi",0,1,0.000,1
+3002Y_20190304_Ke_1_0553,05:58:00,05:58:00,1174504,2,"Siuntio via Kirkkonummi",0,0,3.026,0
+3002Y_20190304_Ke_1_0553,06:01:00,06:01:00,1291501,3,"Siuntio via Kirkkonummi",0,0,6.134,0
+3002Y_20190304_Ke_1_0553,06:05:00,06:05:00,2111502,4,"Siuntio via Kirkkonummi",0,0,10.892,0
+3002Y_20190304_Ke_1_0553,06:12:00,06:12:00,2611502,5,"Siuntio via Kirkkonummi",0,0,20.000,0
+3002Y_20190304_Ke_1_0553,06:20:00,06:20:00,6010503,6,"Siuntio via Kirkkonummi",0,0,28.821,0
+3002Y_20190304_Ke_1_0553,06:26:00,06:27:00,6010501,7,"Siuntio",0,0,36.721,1
+3002Y_20190304_Ke_1_0553,06:36:00,06:36:00,6010506,8,,1,0,50.631,0

@@ -1,0 +1,12 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,wheelchair_boarding,platform_code,vehicle_type
+1020502,0070,"Helsinki","Kaivokatu 1",60.172720,24.939911,01,http://aikataulut.hsl.fi/pysakit/fi/1020502.html,0,1000201,0,,109
+1174504,0090,"Pasila","Ratapihantie 6",60.199483,24.932706,01,http://aikataulut.hsl.fi/pysakit/fi/1174504.html,0,1000202,0,6,109
+1291501,0079,"Huopalahti","Kylätie 25",60.218387,24.893444,01,http://aikataulut.hsl.fi/pysakit/fi/1291501.html,0,1000204,0,1-4,109
+2611502,E6038,"Espoo","Espoonsilta",60.205095,24.656446,02,http://aikataulut.hsl.fi/pysakit/fi/2611502.html,0,2000208,0,1,109
+2111502,E1057,"Leppävaara","Leppäpolku 1",60.219486,24.813242,02,http://aikataulut.hsl.fi/pysakit/fi/2111502.html,0,2000202,0,1,109
+6010501,Ki0101,"Kirkkonummi","Asemankaari 12",60.119630,24.438926,06,http://aikataulut.hsl.fi/pysakit/fi/6010501.html,0,6000205,0,1-3,109
+6010503,Ki0103,"Masala","Junailijankuja 1",60.158511,24.539098,06,http://aikataulut.hsl.fi/pysakit/fi/6010503.html,0,6000202,0,1,109
+6010506,So0106,"Siuntio","Ratapihantie",60.140441,24.219418,06,http://aikataulut.hsl.fi/pysakit/fi/6010506.html,0, ,0,1,109
+1173104,2164,"Pasilan asema","Asemapäällikönk. 10",60.198300,24.937373,01,http://aikataulut.hsl.fi/pysakit/fi/1173104.html,0, ,2,28,3
+1173105,0611,"Pasilan asema","Ratapihantie 7",60.199420,24.934610,01,http://aikataulut.hsl.fi/pysakit/fi/1173105.html,0,1000004,1,15,3
+1173106,0620,"Pasilan asema","Ratapihantie",60.199890,24.934020,01,http://aikataulut.hsl.fi/pysakit/fi/1173106.html,0,1000004,2,16,3
