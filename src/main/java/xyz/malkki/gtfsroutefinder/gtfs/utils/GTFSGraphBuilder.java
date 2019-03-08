@@ -16,6 +16,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GTFSGraphBuilder {
+    /**
+     * Builds a graph from GTFS feed
+     * @param directory Directory that contains GTFS feed files
+     * @return
+     * @throws IOException
+     */
     public static GTFSGraph buildFromFiles(String directory) throws IOException {
         File dir = new File(directory);
 
