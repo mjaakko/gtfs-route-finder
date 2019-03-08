@@ -1,9 +1,10 @@
-1. Lataa jokin GTFS-syöte ja pura se haluamaasi kansioon
+1. Lataa ohjelman [jar-tiedosto](https://github.com/mjaakko/gtfs-route-finder/releases/download/loppupalautus/gtfs-route-finder-1.0-SNAPSHOT.jar)
+2. Lataa jokin GTFS-syöte ja pura se haluamaasi kansioon
    * [Täältä](https://api.digitransit.fi/routing-data/v2/finland/) löytyy joidenkin suomalaisten kaupunkien GTFS-syötteitä. Ainakin `tampere.zip` ja 
 `HSL.zip` tutkitusti toimivat tällä ohjelmalla.
-2. Aja ohjelma komennolla `gradle run`
-3. Kun ohjelma sanoo: `Location for GTFS feed:`, syötä aiemmin lataamasi GTFS-syötteen sijainti
-4. Ohjelma kysyy haluamasi toiminnon
+3. Aja ohjelma komennolla `java -jar gtfs-route-finder-1.0-SNAPSHOT.jar`
+4. Kun ohjelma sanoo: `Location for GTFS feed:`, syötä aiemmin lataamasi GTFS-syötteen sijainti
+5. Ohjelma kysyy haluamasi toiminnon
 
 ## 1 - Algoritmien vertailu
 
@@ -61,6 +62,3 @@ null (WALK) Pyynikintori A -> Pyynikintori
 4 (BUS) Lukonmäki et. -> Tieteenkatu
 null (WALK) Tieteenkatu -> Shell Hervanta
 ```
-
-**Huom!** Tällä hetkellä ohjelma ei juurikaan käsittele virhetilanteita 
-ja esimerkiksi virheellinen syöte johtaa ohjelman kaatumiseen.
