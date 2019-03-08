@@ -8,7 +8,7 @@ public enum TransportMode {
      * See list of possible types here: https://developers.google.com/transit/gtfs/reference/#routestxt and https://developers.google.com/transit/gtfs/reference/extended-route-types
      * Note that taxi and car modes are not supported
      * @param type GTFS transport type
-     * @returne Transport mode corresponding to the GTFS type
+     * @return Transport mode corresponding to the GTFS type
      */
     public static TransportMode getTransportModeFromGTFSType(int type) {
         if (type >= 100 && type < 200) {
