@@ -1,5 +1,6 @@
 package xyz.malkki.gtfsroutefinder;
 
+import com.sun.corba.se.spi.monitoring.MonitoringConstants;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import xyz.malkki.gtfsroutefinder.datastructures.TiraArrayList;
@@ -188,8 +189,16 @@ public class Main {
     private static void routeFinder(GTFSGraph gtfsGraph, Scanner scanner, AStar<Stop> aStarRouteFinder) {
         System.out.println("Search for origin stop:");
         Stop origin = findStop(gtfsGraph, scanner);
+        if (origin == null) {
+            System.out.println("No stops found");
+            return;
+        }
         System.out.println("Search for destination stop:");
         Stop destination = findStop(gtfsGraph, scanner);
+        if (destination == null) {
+            System.out.println("No stops found");
+            return;
+        }
 
         long startRouteSearch = System.nanoTime();
         List<Edge<Stop>> route = aStarRouteFinder.findPath(gtfsGraph, origin, System.currentTimeMillis(), destination);
@@ -209,6 +218,11 @@ public class Main {
 
     private static Stop findStop(GTFSGraph graph, Scanner scanner) {
         List<Stop> stops = graph.findStopsByName(scanner.nextLine());
+
+        if (stops.isEmpty()) {
+            return null;
+        }
+
         if (stops.size() > 1) {
             for (int i = 0; i < stops.size(); i++) {
                 System.out.println((i+1)+" - "+stops.get(i).getName());
